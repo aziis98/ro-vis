@@ -1,7 +1,6 @@
 # Ricerca Operativa
 
-Un piccolo sito con alcuni degli algoritmi presentati nel corso di Ricerca Operativa. Gli algoritmi sono scritti in Ruby e
-eseguiti nel browser con WASM (uso il Ruby perché è l'unico linguaggio con i numeri razionali e buon supporto per WASM).
+Un piccolo sito con alcuni degli algoritmi presentati nel corso di Ricerca Operativa. Gli algoritmi sono scritti in Ruby e eseguiti nel browser con WASM (uso il Ruby perché è l'unico linguaggio con una sintassi decente per i numeri razionali e buon supporto per WASM).
 
 ## Algoritmi
 
@@ -25,15 +24,7 @@ eseguiti nel browser con WASM (uso il Ruby perché è l'unico linguaggio con i n
 
 -   [ ] Branch and Cut
 
--   [ ] Branch and Price
-
-### Programmazione Dinamica
-
--   [ ] Algoritmo di Bellman
-
--   [ ] Algoritmo di Dijkstra
-
--   [ ] Algoritmo di Floyd
+...
 
 ### Altri
 
