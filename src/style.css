@@ -1,0 +1,176 @@
+*,
+*::before,
+*::after {
+    font-family: inherit;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+
+    position: fixed;
+    overflow: hidden;
+
+    user-select: none;
+}
+
+img {
+    display: block;
+}
+
+/* Typography */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+/* Components */
+
+.boxes {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    align-items: start;
+
+    .algorithm-box {
+        display: grid;
+        grid-template-rows: auto 1fr;
+
+        gap: 0.25rem;
+        padding: 1rem;
+        border-radius: 0.75rem;
+
+        background: #fff;
+        border: 2px solid #333;
+
+        width: 10rem;
+        min-height: calc(10rem * 3 / 4);
+
+        p {
+            color: #444;
+        }
+
+        cursor: pointer;
+
+        &:hover {
+            background: #f4f4f4;
+        }
+    }
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    place-self: center;
+
+    gap: 1rem;
+
+    .step {
+        display: grid;
+        grid-template-rows: auto 1fr;
+
+        gap: 0.5rem;
+        padding: 1rem;
+        border-radius: 0.75rem;
+
+        background: #fff;
+        border: 2px solid #333;
+
+        min-width: 20rem;
+
+        & > .label {
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        & > .state {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.25rem;
+        }
+    }
+}
+
+/* Structure */
+
+body {
+    display: grid;
+    grid-template-columns: 20% 1fr;
+    grid-template-rows: auto 1fr;
+
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+
+    background: #f0f0f0;
+
+    & > header,
+    aside,
+    main,
+    footer {
+        display: grid;
+        place-content: center;
+
+        padding: 0 1rem;
+    }
+
+    & > header {
+        height: 3rem;
+
+        grid-column: span 2;
+
+        border-bottom: 2px solid #333;
+        background: #fff;
+
+        font-weight: 300;
+        font-size: 1.25rem;
+    }
+
+    & > aside {
+        border-right: 2px solid #333;
+        background: #e0e0e0;
+
+        position: sticky;
+        height: 100vh;
+
+        padding: 1rem;
+
+        align-content: start;
+    }
+
+    & > main {
+        display: grid;
+        grid-template-columns: auto;
+
+        padding: 6rem 1rem;
+        gap: 1.5rem;
+
+        place-content: center;
+        align-content: start;
+
+        overflow: auto;
+
+        & > section {
+            display: grid;
+            grid-template-columns: auto;
+            gap: 0.5rem;
+        }
+    }
+}

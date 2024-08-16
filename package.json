@@ -1,0 +1,27 @@
+{
+    "name": "ricerca-operativa",
+    "module": "index.ts",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@preact/preset-vite": "^2.9.0",
+        "@types/bun": "latest",
+        "@types/katex": "^0.16.7",
+        "@types/lodash": "^4.17.7",
+        "vite": "^5.4.1"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@fontsource/inter": "^5.0.20",
+        "@ruby/3.3-wasm-wasi": "^2.6.2",
+        "@ruby/wasm-wasi": "^2.6.2",
+        "katex": "^0.16.11",
+        "lodash": "^4.17.21",
+        "vite-plugin-wasm": "^3.3.0"
+    }
+}
