@@ -17,7 +17,10 @@ export async function evalRuby(code) {
     await preloadRuby()
 
     window.rubyOutputs = []
+
+    console.time('Ruby eval')
     const result = vmInstance.eval(code)
+    console.timeEnd('Ruby eval')
 
     return {
         result,
