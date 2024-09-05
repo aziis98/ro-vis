@@ -77,12 +77,11 @@ def run(config)
 
   print_card "Initial" do
     math <<-LATEX
-      \\begin{aligned}
-        c &= #{c.to_latex} \\\\
-        A &= #{mat.to_latex} \\\\
-        b &= #{b.to_latex} \\\\
-        \\mathcal B &= \\{ #{basis.map { |i| i + 1 }.join(", ")} \\}
-      \\end{aligned}
+      \\begin{array}{rlcl}
+        c &= #{c.to_matrix.transpose.to_latex}^T & & \\\\[5pt]
+        A &= #{mat.to_latex} & \\leq & #{b.to_latex} = b \\\\[28pt]
+        \\mathcal B &= \\{ #{basis.map { |i| i + 1 }.join(", ")} \\} &&
+      \\end{array}
     LATEX
   end
 
@@ -131,7 +130,6 @@ def run(config)
           \\end{aligned}
         LATEX
       end
-
       break
     end
 
@@ -150,7 +148,7 @@ def run(config)
       LATEX
     end
 
-    u = Vector.basis(size: basis.size, index: h)
+    u = Vector.basis(size: basis.size, index: basis_inv[h])
 
     xi = -mat_basis_inv * u
 
@@ -172,7 +170,7 @@ def run(config)
     print_card "Step" do
       math <<-LATEX
         \\begin{aligned}
-          N &= \\{ #{basis.map { |i| i + 1 }.join(", ")} \\} \\setminus \\{ #{h + 1} \\} \\\\
+          N &= \\{ #{(0...mat.row_count).to_a.map { |i| i + 1 }.join(", ")} \\} \\setminus \\{ #{h + 1} \\} \\\\
           A_N &= #{mat_basis_op.to_latex} \\\\
           d &= A_N \\xi = #{mat_basis_op.to_latex} #{xi.to_latex} = #{d.to_latex}
         \\end{aligned}
@@ -180,7 +178,43 @@ def run(config)
     end
 
     if d.all? { |d| d <= 0 }
+      print_card "Step" do
+        text "Problem is unbounded."
+        math <<-LATEX
+          \\begin{aligned}
+            A_N \\xi = #{d.to_latex} \\leq 0
+          \\end{aligned}
+        LATEX
+      end
       break
+    end
+
+    # k := \min \left\{ \arg\min_{i \in N, A_i \xi > 0} \frac{b_i - A_i \bar{x}}{A_i \xi} \right\}
+
+    k = (0...mat.row_count).to_a
+      .select { |i| !basis.include?(i) && mat.row(i).inner_product(xi) > 0 }
+      .min_by { |i| (b[i] - mat.row(i).inner_product(x_bar)) / mat.row(i).inner_product(xi) }
+
+    print_card "Step" do
+      math <<-LATEX
+        \\begin{aligned}
+          N &= \\{ #{(0...mat.row_count).to_a.map { |i| i + 1 }.join(", ")} \\} \\setminus \\{ #{h + 1} \\} \\\\
+          k &= \\min \\left\\{ i \\in N : A_i \\xi > 0 \\right\\} = #{k + 1}
+        \\end{aligned}
+      LATEX
+    end
+
+    p basis
+    basis = basis - [h] + [k]
+    p basis
+
+    print_card "Step" do
+      text "Update basis."
+      math <<-LATEX
+        \\begin{aligned}
+          \\mathcal B &= \\{ #{basis.map { |i| i + 1 }.join(", ")} \\}
+        \\end{aligned}
+      LATEX
     end
   end
 end

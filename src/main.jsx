@@ -31,20 +31,22 @@ const AlgorithmChooserView = ({ setCurrentView }) => {
     return (
         <>
             <h1>Algoritmi</h1>
-            {Object.entries(sections).map(([group, algorithms]) => (
-                <section>
-                    <h2>{group}</h2>
-                    <div class="boxes">
-                        {algorithms.map(({ id, metadata }) => (
-                            <NewAlgorithmBox
-                                title={metadata.title}
-                                description={metadata.description}
-                                onClick={() => setCurrentView(id)}
-                            />
-                        ))}
-                    </div>
-                </section>
-            ))}
+            {Object.entries(sections)
+                .toSorted((a, b) => a[0].localeCompare(b[0]))
+                .map(([group, algorithms]) => (
+                    <section>
+                        <h2>{group}</h2>
+                        <div class="boxes">
+                            {algorithms.map(({ id, metadata }) => (
+                                <NewAlgorithmBox
+                                    title={metadata.title}
+                                    description={metadata.description}
+                                    onClick={() => setCurrentView(id)}
+                                />
+                            ))}
+                        </div>
+                    </section>
+                ))}
             <section>
                 <h2>Flussi su Grafi</h2>
                 <div class="boxes">

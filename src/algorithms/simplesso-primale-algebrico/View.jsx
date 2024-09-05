@@ -5,7 +5,7 @@ import algorithmCode from './algorithm.rb?raw'
 import { useEffect, useState } from 'preact/hooks'
 
 export const metadata = {
-    group: 'Programmazione Lineare',
+    group: '01 - Programmazione Lineare',
     title: 'Simplesso Primale Algebrico',
     description: 'Algoritmo principale della programmazione lineare',
 }
@@ -21,8 +21,6 @@ export const View = ({}) => {
     return (
         <>
             <h1>Simplesso Primale Algebrico</h1>
-            <p>TODO</p>
-
             <Steps steps={steps} />
         </>
     )
