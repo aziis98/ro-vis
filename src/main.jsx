@@ -4,6 +4,7 @@ import '@fontsource/inter/latin.css'
 import _ from 'lodash'
 
 import { render } from 'preact'
+import Router, { route } from 'preact-router'
 import { useState } from 'preact/hooks'
 
 const ViewRegistry = Object.fromEntries(
@@ -25,7 +26,7 @@ const NewAlgorithmBox = ({ title, description, onClick }) => (
     </div>
 )
 
-const AlgorithmChooserView = ({ setCurrentView }) => {
+const AlgorithmChooserView = ({}) => {
     const sections = _.groupBy(ViewRegistry, 'metadata.group')
 
     return (
@@ -41,7 +42,7 @@ const AlgorithmChooserView = ({ setCurrentView }) => {
                                 <NewAlgorithmBox
                                     title={metadata.title}
                                     description={metadata.description}
-                                    onClick={() => setCurrentView(id)}
+                                    onClick={() => route(id)}
                                 />
                             ))}
                         </div>
@@ -98,7 +99,12 @@ const App = ({}) => {
                 <h2>History</h2>
             </aside>
             <main>
-                <Main />
+                <Router>
+                    <AlgorithmChooserView path="/" />
+                    {Object.entries(ViewRegistry).map(([id, { View }]) => (
+                        <View path={id} />
+                    ))}
+                </Router>
             </main>
         </>
     )

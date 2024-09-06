@@ -20,18 +20,21 @@ export const View = ({}) => {
             {
                 id: id1,
                 label: '1',
+                balance: 0,
                 x: 100 + Math.random() * 500,
                 y: 100 + Math.random() * 300,
             },
             {
                 id: id2,
                 label: '2',
+                balance: 0,
                 x: 100 + Math.random() * 500,
                 y: 100 + Math.random() * 300,
             },
             {
                 id: id3,
                 label: '3',
+                balance: 0,
                 x: 100 + Math.random() * 500,
                 y: 100 + Math.random() * 300,
             },

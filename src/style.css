@@ -51,6 +51,22 @@ h6 {
 
 /* Components */
 
+button {
+    outline: none;
+    border: none;
+
+    background: #555;
+    color: #fff;
+
+    border-radius: 0.25rem;
+
+    cursor: pointer;
+
+    &:hover {
+        background: #777;
+    }
+}
+
 .boxes {
     display: flex;
     flex-direction: row;
@@ -174,23 +190,70 @@ h6 {
 
             transform: translate(-50%, -50%);
 
-            display: grid;
-            place-content: center;
-
-            width: 2.5rem;
-            height: 2.5rem;
-
-            background: #f0f0f0;
-            border: 2px solid #333;
-            border-radius: 1.25rem;
-
             pointer-events: all;
 
-            cursor: move;
+            > .balance {
+                position: absolute;
+                top: 100%;
+                left: 50%;
 
-            &.targeted {
+                font-size: 18px;
+
+                transform: translateX(-50%);
+            }
+
+            > .node-ball {
+                display: grid;
+                place-content: center;
+
+                width: 2.5rem;
+                height: 2.5rem;
+
+                background: #f0f0f0;
+                border: 2px solid #333;
+                border-radius: 1.25rem;
+
+                cursor: move;
+            }
+
+            > .popup {
+                position: absolute;
+                z-index: -1;
+
+                inset: -0.25rem;
+
+                height: 4rem;
+
+                /* background: #e0e0e0dd;
+                border: 2px solid #333; */
+                /* border-radius: 0.5rem; */
+
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+
+                right: -2.25rem;
+                top: 50%;
+
+                transform: translateY(-50%);
+
+                padding: 0.25rem;
+                padding-left: 3rem;
+
+                opacity: 0;
+
+                > * {
+                    flex-grow: 1;
+                }
+            }
+
+            &.targeted > .node-ball {
                 color: #fff;
                 background: green;
+            }
+
+            &:hover > .popup {
+                opacity: 1;
             }
         }
     }

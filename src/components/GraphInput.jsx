@@ -56,6 +56,7 @@ export const GraphInput = ({ graph, setGraph }) => {
                 {
                     id: crypto.randomUUID(9).split('-')[0],
                     label: '?',
+                    balance: 0,
                     x,
                     y,
                 },
@@ -193,7 +194,7 @@ export const GraphInput = ({ graph, setGraph }) => {
                 ))}
             </div>
             <div class="nodes">
-                {graph.nodes.map(({ id, label, x, y }, index) => (
+                {graph.nodes.map(({ id, label, balance, x, y }, index) => (
                     <div
                         class={[
                             'node',
@@ -204,44 +205,6 @@ export const GraphInput = ({ graph, setGraph }) => {
                             .filter(Boolean)
                             .join(' ')}
                         style={{ '--x': x, '--y': y }}
-                        onMouseDown={e => {
-                            if (interacting) return
-
-                            if (e.ctrlKey) {
-                                setInteracting({
-                                    type: 'arrow',
-                                    index,
-                                    initialPos: { x, y },
-                                    initialDragPos: { x: e.x, y: e.y },
-                                    x: x,
-                                    y: y,
-                                    target: null,
-                                })
-                            } else {
-                                setInteracting({
-                                    type: 'drag',
-                                    index,
-                                    initialPos: { x, y },
-                                    initialDragPos: { x: e.x, y: e.y },
-                                })
-                            }
-                        }}
-                        onMouseMove={e => {
-                            if (interacting?.type === 'arrow' && interacting.index !== index) {
-                                setInteracting(i => ({ ...i, target: index }))
-                            }
-                        }}
-                        onMouseLeave={e => {
-                            if (interacting && interacting.type === 'arrow') {
-                                setInteracting(i => ({ ...i, target: null }))
-                            }
-                        }}
-                        onDblclick={e => {
-                            setInteracting({
-                                type: 'edit-node',
-                                index,
-                            })
-                        }}
                         onKeyDown={e => {
                             if (
                                 (e.key === 'Enter' || e.key === 'Escape') &&
@@ -251,27 +214,110 @@ export const GraphInput = ({ graph, setGraph }) => {
                             }
                         }}
                     >
-                        {interacting?.type === 'edit-node' && interacting.index === index ? (
-                            <input
-                                type="text"
-                                value={label}
-                                onInput={e =>
+                        <div class="popup">
+                            <button
+                                onClick={() => {
                                     setGraph(g => {
                                         const newNodes = [...g.nodes]
-                                        newNodes[interacting.index] = {
-                                            ...g.nodes[interacting.index],
-                                            label: e.target.value,
+                                        newNodes[index] = {
+                                            ...g.nodes[index],
+                                            balance: g.nodes[index].balance + 1,
                                         }
 
-                                        return {
-                                            ...g,
-                                            nodes: newNodes,
+                                        return { ...g, nodes: newNodes }
+                                    })
+                                }}
+                            >
+                                +
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setGraph(g => {
+                                        const newNodes = [...g.nodes]
+                                        newNodes[index] = {
+                                            ...g.nodes[index],
+                                            balance: g.nodes[index].balance - 1,
                                         }
+
+                                        return { ...g, nodes: newNodes }
+                                    })
+                                }}
+                            >
+                                -
+                            </button>
+                        </div>
+                        <div
+                            class="node-ball"
+                            onMouseDown={e => {
+                                if (interacting) return
+
+                                if (e.ctrlKey) {
+                                    setInteracting({
+                                        type: 'arrow',
+                                        index,
+                                        initialPos: { x, y },
+                                        initialDragPos: { x: e.x, y: e.y },
+                                        x: x,
+                                        y: y,
+                                        target: null,
+                                    })
+                                } else {
+                                    setInteracting({
+                                        type: 'drag',
+                                        index,
+                                        initialPos: { x, y },
+                                        initialDragPos: { x: e.x, y: e.y },
                                     })
                                 }
-                            />
-                        ) : (
-                            label
+                            }}
+                            onMouseMove={e => {
+                                if (interacting?.type === 'arrow' && interacting.index !== index) {
+                                    setInteracting(i => ({ ...i, target: index }))
+                                }
+                            }}
+                            onMouseLeave={e => {
+                                if (interacting && interacting.type === 'arrow') {
+                                    setInteracting(i => ({ ...i, target: null }))
+                                }
+                            }}
+                            onDblclick={e => {
+                                setInteracting({
+                                    type: 'edit-node',
+                                    index,
+                                })
+                            }}
+                        >
+                            {interacting?.type === 'edit-node' && interacting.index === index ? (
+                                <input
+                                    type="text"
+                                    value={label}
+                                    onInput={e =>
+                                        setGraph(g => {
+                                            const newNodes = [...g.nodes]
+                                            newNodes[interacting.index] = {
+                                                ...g.nodes[interacting.index],
+                                                label: e.target.value,
+                                            }
+
+                                            return {
+                                                ...g,
+                                                nodes: newNodes,
+                                            }
+                                        })
+                                    }
+                                />
+                            ) : (
+                                label
+                            )}
+                        </div>
+                        {balance !== 0 && (
+                            <div class="balance">
+                                {balance < 0 ? (
+                                    <>&minus;{Math.abs(balance)}</>
+                                ) : (
+                                    <>+{Math.abs(balance)}</>
+                                )}
+                            </div>
                         )}
                     </div>
                 ))}
