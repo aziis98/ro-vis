@@ -1,0 +1,93 @@
+@layer base, components, utilities;
+
+@layer base {
+    *,
+    *::before,
+    *::after {
+        font-family: inherit;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        height: 100%;
+        min-height: 100%;
+    }
+
+    img {
+        display: block;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        font-weight: 300;
+        margin: 0;
+        color: #222;
+    }
+
+    a {
+        color: royalblue;
+        text-decoration: underline dotted;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    textarea {
+        resize: vertical;
+
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 400;
+        color: #333;
+    }
+
+    pre,
+    code {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 400;
+        color: #333;
+    }
+
+    strong {
+        font-weight: 700;
+        color: #444;
+    }
+}
+
+@layer components {
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        line-height: 1.75;
+
+        color: #333;
+
+        padding: 3rem 1rem;
+
+        > * {
+            display: block;
+            max-width: 900px;
+            margin: 0.5rem auto;
+        }
+    }
+}
+
+@layer utilities {
+    .v-stack {
+        display: grid;
+        gap: 0.5rem;
+        align-content: start;
+        justify-items: start;
+    }
+
+    .h-stack {
+        display: grid;
+        gap: 0.5rem;
+        grid-auto-flow: column;
+        align-items: center;
+    }
+}

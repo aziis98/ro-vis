@@ -1,0 +1,22 @@
+{
+    "name": "math-canvas-v2",
+    "module": "index.ts",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@preact/preset-vite": "^2.9.3",
+        "@types/bun": "latest",
+        "@types/katex": "^0.16.7",
+        "vite": "^6.0.6"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "katex": "^0.16.20",
+        "preact": "^10.25.4"
+    }
+}
