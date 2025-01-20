@@ -1,74 +1,61 @@
 import { Matrix } from './matrix'
-import { isRational, Rational } from './rationals'
+import { Rational } from './rationals'
+import { Result } from './util'
 import { Vector } from './vector'
 
-export type Value = Rational | Rational[] | Rational[][]
+export type Value = { rank: 0; value: Rational } | { rank: 1; value: Rational[] } | { rank: 2; value: Rational[][] }
 
 export function asScalar(v: Value): Rational {
-    if (isRational(v)) {
-        return v
+    if (v.rank === 0) {
+        return v.value
     }
 
     throw new Error(`Expected scalar, got ${JSON.stringify(v)}`)
 }
 
 export function asVector(v: Value): Vector<Rational> {
-    if (isRational(v)) {
-        return Vector.ofRationals([v])
+    if (v.rank === 1) {
+        return Vector.of(v.value)
     }
 
-    if (Array.isArray(v) && v.every(vv => isRational(vv))) {
-        return Vector.ofRationals(v)
+    if (v.rank === 2 && v.value.every(row => row.length === 1)) {
+        return Vector.of(v.value.map(row => row[0]))
     }
 
-    if (Array.isArray(v) && v.every(vv => Array.isArray(vv) && vv.length === 1 && isRational(vv[0]))) {
-        return Vector.ofRationals(v.map(vv => vv[0]))
-    }
-
-    if (Array.isArray(v) && v.length === 1 && Array.isArray(v[0]) && v[0].every(vv => isRational(vv))) {
-        return Vector.ofRationals(v[0])
+    if (v.rank === 2 && v.value.length === 1) {
+        return Vector.of(v.value[0])
     }
 
     throw new Error(`Expected column vector, got ${JSON.stringify(v)}`)
 }
 
 export function asMatrix(v: Value): Matrix<Rational> {
-    // scalar
-    if (isRational(v)) {
-        return Matrix.ofRationals(1, 1, [[v]])
+    if (v.rank === 0) {
+        return Matrix.of([[v.value]])
     }
 
-    // vector
-    if (Array.isArray(v) && v.every(vv => isRational(vv))) {
-        return Matrix.ofRationals(
-            v.length,
-            1,
-            v.map(vv => [vv])
-        )
+    if (v.rank === 1) {
+        return Matrix.of(v.value.map(vv => [vv]))
     }
 
-    // matrix
-    if (Array.isArray(v) && v.every(vv => Array.isArray(vv) && vv.every(vvv => isRational(vvv)))) {
-        return Matrix.ofRationals(v.length, v[0].length, v)
+    if (v.rank === 2) {
+        return Matrix.of(v.value)
     }
 
     throw new Error(`Expected matrix, got ${JSON.stringify(v)}`)
 }
 
 function transposeValue(v: Value): Value {
-    // scalar
-    if (isRational(v)) {
+    if (v.rank === 0) {
         return v
     }
 
-    // vector
-    if (Array.isArray(v) && v.every(vv => isRational(vv))) {
-        return v.map(vv => [vv])
+    if (v.rank === 1) {
+        return { rank: 2, value: v.value.map(r => [r]) }
     }
 
-    // matrix
-    if (Array.isArray(v) && v.every(vv => Array.isArray(vv) && vv.every(vvv => isRational(vvv)))) {
-        return asMatrix(v).transpose().getData()
+    if (v.rank === 2) {
+        return { rank: 2, value: asMatrix(v).transpose().getData() }
     }
 
     throw new Error(`Cannot transpose value: ${JSON.stringify(v)}`)
@@ -132,7 +119,7 @@ export function parse(source: string): Record<string, Value> {
     let i = 0
 
     function parseValue(): Value {
-        const values: Rational[][] = []
+        const rows: Rational[][] = []
         let currentRow: Rational[] = []
 
         while (i < tokens.length) {
@@ -149,22 +136,22 @@ export function parse(source: string): Record<string, Value> {
                     }
 
                     i++
-                    currentRow.push({ num: n, den: Number(tokens[i].value) })
+                    currentRow.push(Rational.of(n, Number(tokens[i].value)))
 
                     i++
                 } else {
                     i++
-                    currentRow.push({ num: n, den: 1 })
+                    currentRow.push(Rational.of(n, 1))
                 }
             } else if (token.type === TokenType.Newline) {
                 if (currentRow.length > 0) {
-                    values.push(currentRow)
+                    rows.push(currentRow)
                     currentRow = []
                 }
                 i++
             } else if (token.type === TokenType.Semicolon) {
                 if (currentRow.length > 0) {
-                    values.push(currentRow)
+                    rows.push(currentRow)
                 }
                 i++
                 break
@@ -173,11 +160,11 @@ export function parse(source: string): Record<string, Value> {
             }
         }
 
-        if (values.length === 1) {
-            return values[0].length === 1 ? values[0][0] : values[0]
+        if (rows.length === 1) {
+            return { rank: 1, value: rows[0] }
         }
 
-        return values
+        return { rank: 2, value: rows }
     }
 
     while (i < tokens.length) {
@@ -215,31 +202,10 @@ export function parse(source: string): Record<string, Value> {
     return result
 }
 
-export function parseSafe(source: string): { result: Record<string, Value> } | { error: string } {
+export function parseSafe(source: string): Result<Record<string, Value>> {
     try {
         return { result: parse(source) }
     } catch (e) {
         return { error: e!.toString() }
     }
 }
-
-// Example usage
-const source = `
-c' = 500 200;
-
-A =  1  0
-     0  1
-     2  1
-    -1  0
-    -1  0;
-
-b =  4
-     7
-     9
-     0
-     0;
-
-B = 1/2  3;
-`
-
-console.dir(parse(source), { depth: null })

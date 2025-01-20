@@ -74,6 +74,57 @@
             margin: 0.5rem auto;
         }
     }
+
+    canvas {
+        display: block;
+        width: 100%;
+
+        aspect-ratio: 1 / 1;
+
+        border: 1px solid #ddd;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+
+        border-radius: 1rem;
+    }
+
+    .steps {
+        display: grid;
+        grid-auto-flow: row;
+        justify-items: center;
+
+        border: 1px solid #ddd;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+
+        border-radius: 1rem;
+
+        padding: 2rem;
+        max-width: fit-content;
+
+        > .step {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            justify-items: center;
+            align-items: center;
+            gap: 0;
+
+            @media (width < 768px) {
+                grid-template-columns: 1fr;
+            }
+
+            > .algebraic-step {
+                /* border: 1px solid #ddd; */
+                /* box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1); */
+
+                border-radius: 1rem;
+                padding: 0 1rem;
+            }
+
+            > .geometric-step {
+                /* padding: 1rem; */
+                min-width: 30rem;
+            }
+        }
+    }
 }
 
 @layer utilities {

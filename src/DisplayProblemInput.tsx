@@ -1,5 +1,5 @@
 import { Katex } from './Katex'
-import { matrixToLatex, rowVectorToLatex, vectorToLatex } from './lib/latex'
+import { matrixToLatex, rowVectorToLatex, vectorToLatex } from './lib-v2/latex'
 import { ProblemInput } from './parser-problem'
 
 export const DisplayProblemInput = ({ problemInput }: { problemInput: ProblemInput }) => {
