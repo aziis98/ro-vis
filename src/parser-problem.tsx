@@ -64,6 +64,14 @@ export function parseSafeProblemInput(source: string): Result<ProblemInput> {
         }
     }
 
+    // check dimensions
+    if (A.cols !== c.size) {
+        return { error: 'Il numero di colonne di A deve essere uguale alla dimensione di c' }
+    }
+    if (A.rows !== b.size) {
+        return { error: 'Il numero di righe di A deve essere uguale alla dimensione di b' }
+    }
+
     return {
         result: {
             A,

@@ -22,7 +22,26 @@ b =  4
 B = 2 3;
 `.trim()
 
+const useLocalStorage = <T,>(key: string, initialValue: T) => {
+    const [value, setValue] = useState<T>(() => {
+        const item = window.localStorage.getItem(key)
+        return item ? JSON.parse(item) : initialValue
+    })
+
+    const setItem = (newValue: T) => {
+        setValue(newValue)
+        window.localStorage.setItem(key, JSON.stringify(newValue))
+    }
+
+    return [value, setItem] as const
+}
+
 const App = () => {
+    const [currentProblemName, setCurrentProblemName] = useState('Pintel')
+    const [savedProblems, setSavedProblems] = useLocalStorage<{ name: string; source: string }[]>('savedProblems', [
+        { name: 'Pintel', source: INITIAL_PROBLEM_INPUT },
+    ])
+
     const [problemInput, setProblemInput] = useState(INITIAL_PROBLEM_INPUT)
 
     const problemValuesResult = parseSafeProblemInput(problemInput)
@@ -36,6 +55,53 @@ const App = () => {
             </p>
             <h2>Visualizzazione</h2>
             <p>I dati del problema vanno inseriti nel seguente campo di testo nel formato:</p>
+
+            <div class="flex-row">
+                <select
+                    onInput={e => {
+                        const name = e.currentTarget.value
+                        console.log(name)
+
+                        const savedProblem = savedProblems.find(p => p.name === name)
+                        if (savedProblem) {
+                            setCurrentProblemName(name)
+                            setProblemInput(savedProblem.source)
+                        }
+                    }}
+                >
+                    {savedProblems.find(p => p.name === currentProblemName)?.source !== problemInput && (
+                        <option selected>Unsaved</option>
+                    )}
+                    {savedProblems.map(({ name }) => (
+                        <option
+                            value={name}
+                            selected={
+                                name === currentProblemName &&
+                                savedProblems.find(p => p.name === name)!.source === problemInput
+                            }
+                        >
+                            {name}
+                        </option>
+                    ))}
+                </select>
+                <div class="spacer"></div>
+                <input
+                    type="text"
+                    onInput={e => {
+                        const name = e.currentTarget.value
+                        setCurrentProblemName(name)
+                    }}
+                    value={currentProblemName}
+                />
+                <button
+                    onClick={() => {
+                        setSavedProblems([...savedProblems, { name: currentProblemName, source: problemInput }])
+                    }}
+                >
+                    Salva
+                </button>
+            </div>
+
             <textarea
                 value={problemInput}
                 onInput={e => setProblemInput(e.currentTarget.value)}

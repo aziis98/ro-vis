@@ -40,12 +40,50 @@
         }
     }
 
+    textarea,
+    input[type='text'] {
+        background: #fff;
+        border: 1px solid #888;
+        min-height: 1.75rem;
+        padding: 0 0.25rem;
+        border-radius: 0.25rem;
+
+        box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+    }
+
+    input[type='text'] {
+        font-size: 16px;
+    }
+
     textarea {
         resize: vertical;
+
+        padding: 0.5rem;
 
         font-family: 'JetBrains Mono', monospace;
         font-weight: 400;
         color: #333;
+    }
+
+    button,
+    select {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        color: #333;
+
+        box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+        background: #f0f0f0;
+        border: 1px solid #888;
+        padding: 0 0.5rem;
+        border-radius: 0.25rem;
+        min-height: 1.75rem;
+
+        cursor: pointer;
+
+        &:hover {
+            background: #e0e0e0;
+        }
     }
 
     p {
@@ -163,5 +201,16 @@
         gap: 0.5rem;
         grid-auto-flow: column;
         align-items: center;
+    }
+
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+
+        > .spacer {
+            flex-grow: 1;
+        }
     }
 }
