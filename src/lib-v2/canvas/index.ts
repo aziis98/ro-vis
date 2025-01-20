@@ -69,7 +69,7 @@ export function drawSemiplane(
 
     // Draw the line
     g.strokeStyle = lineColor
-    g.lineWidth = (lineWidth * 10) / g.canvas.width
+    g.lineWidth = (lineWidth * 10) / (g.canvas.width / window.devicePixelRatio)
 
     g.beginPath()
     if (a2 === 0) {

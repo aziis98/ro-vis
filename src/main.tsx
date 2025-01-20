@@ -2,7 +2,7 @@ import { render } from 'preact'
 import { useState } from 'preact/hooks'
 import { parseSafeProblemInput } from './parser-problem'
 import { DisplayProblemInput } from './DisplayProblemInput'
-import { Primale } from './Primale'
+import { Primal } from './Primal'
 
 import exampleProblems from './example-problems.json'
 
@@ -43,6 +43,7 @@ const App = () => {
         'ricerca-operativa.currentProblemName',
         'Pintel'
     )
+
     const [savedProblems, setSavedProblems] = useLocalStorage<{ name: string; source: string }[]>(
         'ricerca-operativa.savedProblems',
         exampleProblems
@@ -137,7 +138,7 @@ const App = () => {
                 </p>
             )}
 
-            {'result' in problemValuesResult && <Primale input={problemValuesResult.result} />}
+            {'result' in problemValuesResult && <Primal input={problemValuesResult.result} />}
         </>
     )
 }

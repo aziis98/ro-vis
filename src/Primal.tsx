@@ -82,7 +82,7 @@ const PrimalStep = ({
     )
 }
 
-export const Primale = ({ input }: { input: ProblemInput }) => {
+export const Primal = ({ input }: { input: ProblemInput }) => {
     // const steps: Step[] = [{ B: input.B }]
 
     const problemOutput = computePrimalSimplexSteps({
@@ -141,16 +141,16 @@ const PrimalCanvas = ({
             return
         }
 
-        $canvas.width = $canvas.offsetWidth
-        $canvas.height = $canvas.offsetHeight
+        $canvas.width = $canvas.offsetWidth * window.devicePixelRatio
+        $canvas.height = $canvas.offsetHeight * window.devicePixelRatio
 
         const g = $canvas.getContext('2d')
         if (!g) {
             throw new Error('Could not get 2d context')
         }
 
-        const width = $canvas.width
-        const height = $canvas.height
+        const width = $canvas.offsetWidth
+        const height = $canvas.offsetHeight
 
         g.clearRect(0, 0, width, height)
         g.strokeStyle = '#333'
@@ -162,6 +162,8 @@ const PrimalCanvas = ({
         g.font = 'bold 16px sans-serif'
         g.textAlign = 'center'
         g.textBaseline = 'middle'
+
+        g.scale(window.devicePixelRatio, window.devicePixelRatio)
 
         const [c1, c2] = c.getData()
         const cLen = Math.sqrt(c1.toNumber() ** 2 + c2.toNumber() ** 2)
@@ -202,87 +204,89 @@ const PrimalCanvas = ({
         // g.textBaseline = 'middle'
         // g.fillText(`A = ${A}`, width / 2, height / 2)
 
-        g.translate(width / 2, height / 2)
-        g.scale(width / 2, -width / 2)
-        g.scale(1 / 10, 1 / 10)
+        g.save()
+        {
+            g.translate(width / 2, height / 2)
+            g.scale(width / 2, -width / 2)
+            g.scale(1 / 10, 1 / 10)
 
-        // draw grid
+            // draw grid
 
-        g.strokeStyle = '#ddd'
-        g.lineWidth = 20 / g.canvas.width
-        for (let i = -10; i <= 10; i++) {
-            strokeInfiniteLine(g, i, 0, Math.PI / 2)
-        }
-        for (let i = -9; i <= 9; i++) {
-            strokeInfiniteLine(g, 0, i, 0)
-        }
+            g.strokeStyle = '#ddd'
+            g.lineWidth = 20 / width
+            for (let i = -10; i <= 10; i++) {
+                strokeInfiniteLine(g, i, 0, Math.PI / 2)
+            }
+            for (let i = -9; i <= 9; i++) {
+                strokeInfiniteLine(g, 0, i, 0)
+            }
 
-        g.strokeStyle = '#333'
-        g.lineWidth = 40 / g.canvas.width
-        drawSimpleArrow(g, 0, 0, 9.8, 0, 0.35, '#444')
-        drawSimpleArrow(g, 0, 0, 0, 9.8, 0.35, '#444')
+            g.strokeStyle = '#333'
+            g.lineWidth = 40 / width
+            drawSimpleArrow(g, 0, 0, 9.8, 0, 0.35, '#444')
+            drawSimpleArrow(g, 0, 0, 0, 9.8, 0.35, '#444')
 
-        // draw semiplanes
+            // draw semiplanes
 
-        // draw semiplanes not in B
-        range(0, A.rows)
-            .filter(i => !B.includes(i))
-            .forEach(i => {
+            // draw semiplanes not in B
+            range(0, A.rows)
+                .filter(i => !B.includes(i))
+                .forEach(i => {
+                    const [a1, a2] = A.rowAt(i).getData()
+                    const b_i = b.at(i)
+
+                    drawSemiplane(g, a1.toNumber(), a2.toNumber(), b_i.toNumber())
+                })
+
+            // draw semiplanes in B
+
+            B.forEach(i => {
                 const [a1, a2] = A.rowAt(i).getData()
                 const b_i = b.at(i)
 
-                drawSemiplane(g, a1.toNumber(), a2.toNumber(), b_i.toNumber())
+                drawSemiplane(g, a1.toNumber(), a2.toNumber(), b_i.toNumber(), {
+                    lineColor: '#040',
+                    lineWidth: 3,
+                })
             })
 
-        // draw semiplanes in B
+            // draw current solution
+            if (x) {
+                const [x1, x2] = x.getData()
 
-        B.forEach(i => {
-            const [a1, a2] = A.rowAt(i).getData()
-            const b_i = b.at(i)
-
-            drawSemiplane(g, a1.toNumber(), a2.toNumber(), b_i.toNumber(), {
-                lineColor: '#040',
-                lineWidth: 3,
-            })
-        })
-
-        // draw current solution
-        if (x) {
-            const [x1, x2] = x.getData()
-
-            g.lineWidth = 50 / g.canvas.width
-            drawSimpleArrow(
-                g,
-                x1.toNumber(),
-                x2.toNumber(),
-                x1.toNumber() + c1.toNumber() / cLen,
-                x2.toNumber() + c2.toNumber() / cLen,
-                0.25,
-                'darkgreen'
-            )
-
-            // draw xi
-            if (xi) {
-                const [xi1, xi2] = xi.getData()
-                const xiLen = Math.sqrt(xi1.toNumber() ** 2 + xi2.toNumber() ** 2)
-
-                g.lineWidth = 50 / g.canvas.width
+                g.lineWidth = 50 / width
                 drawSimpleArrow(
                     g,
                     x1.toNumber(),
                     x2.toNumber(),
-                    x1.toNumber() + xi1.toNumber() / xiLen,
-                    x2.toNumber() + xi2.toNumber() / xiLen,
+                    x1.toNumber() + c1.toNumber() / cLen,
+                    x2.toNumber() + c2.toNumber() / cLen,
                     0.25,
-                    '#44d'
+                    'darkgreen'
                 )
+
+                // draw xi
+                if (xi) {
+                    const [xi1, xi2] = xi.getData()
+                    const xiLen = Math.sqrt(xi1.toNumber() ** 2 + xi2.toNumber() ** 2)
+
+                    g.lineWidth = 50 / width
+                    drawSimpleArrow(
+                        g,
+                        x1.toNumber(),
+                        x2.toNumber(),
+                        x1.toNumber() + xi1.toNumber() / xiLen,
+                        x2.toNumber() + xi2.toNumber() / xiLen,
+                        0.25,
+                        '#44d'
+                    )
+                }
+
+                g.fillStyle = '#d44'
+                fillDot(g, x1.toNumber(), x2.toNumber(), 0.2)
             }
-
-            g.fillStyle = '#d44'
-            fillDot(g, x1.toNumber(), x2.toNumber(), 0.2)
         }
-
-        g.resetTransform()
+        g.restore()
 
         // draw c vector
 
