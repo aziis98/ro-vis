@@ -1,18 +1,18 @@
 [
     {
         "name": "Pintel",
-        "source": "c' = 500 200;\\n\\nA =  1  0\\n     0  1\\n     2  1\\n    -1  0\\n     0 -1;\\n\\nb =  4\\n     7\\n     9\\n     0\\n     0;\\n\\nB = 2 3;"
+        "source": "c' = 500 200;\n\nA =  1  0\n     0  1\n     2  1\n    -1  0\n     0 -1;\n\nb =  4\n     7\n     9\n     0\n     0;\n\nB = 2 3;"
     },
     {
         "name": "Pintel non amm",
-        "source": "c' = 500 200;\\n\\nA =  1  0\\n     0  1\\n     2  1\\n    -1  0\\n     0 -1;\\n\\nb =  4\\n     7\\n     9\\n     0\\n     0;\\n\\nB = 1 2;"
+        "source": "c' = 500 200;\n\nA =  1  0\n     0  1\n     2  1\n    -1  0\n     0 -1;\n\nb =  4\n     7\n     9\n     0\n     0;\n\nB = 1 2;"
     },
     {
         "name": "Pintel (hard)",
-        "source": "c' = -500 -200;\\n\\nA =  1  0\\n     0  1\\n     2  1\\n    -1  0\\n     0 -1;\\n\\nb =  4\\n     7\\n     9\\n     0\\n     0;\\n\\nB = 1 3;"
+        "source": "c' = -500 -200;\n\nA =  1  0\n     0  1\n     2  1\n    -1  0\n     0 -1;\n\nb =  4\n     7\n     9\n     0\n     0;\n\nB = 1 3;"
     },
     {
         "name": "Pintel non amm 2",
-        "source": "c' = -500 -200;\\n\\nA =  1  0\\n     0  1\\n     2  1\\n    -1  0\\n     0 -1;\\n\\nb =  4\\n     7\\n     9\\n     0\\n     0;\\n\\nB = 1 2;"
+        "source": "c' = -500 -200;\n\nA =  1  0\n     0  1\n     2  1\n    -1  0\n     0 -1;\n\nb =  4\n     7\n     9\n     0\n     0;\n\nB = 1 2;"
     }
 ]
