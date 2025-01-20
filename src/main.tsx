@@ -50,8 +50,15 @@ const App = () => {
         <>
             <h1>Ricerca Operativa / Programmazione Lineare</h1>
             <p>
-                Questo sito è un progetto per il corso di Ricerca Operativa dell'Università di Pisa per visualizzare
-                automaticamente tutti i passaggi dell'<a href="#">algoritmo del simplesso primale e duale</a>.
+                Questo sito è un progetto per il corso di{' '}
+                <a href="https://didawiki.cli.di.unipi.it/doku.php/matematica/ro/start">
+                    Ricerca Operativa dell'Università di Pisa
+                </a>{' '}
+                per visualizzare automaticamente tutti i passaggi dell'
+                <a href="https://it.wikipedia.org/wiki/Algoritmo_del_simplesso">
+                    algoritmo del simplesso primale e duale
+                </a>
+                .
             </p>
             <h2>Visualizzazione</h2>
             <p>I dati del problema vanno inseriti nel seguente campo di testo nel formato:</p>
