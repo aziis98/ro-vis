@@ -54,11 +54,6 @@ const App = () => {
             <h2>Svolgimento</h2>
 
             {'result' in problemValuesResult && <Primale input={problemValuesResult.result} />}
-
-            <h2>Debug</h2>
-            <pre>
-                <code>{JSON.stringify(problemValuesResult, null, 4)}</code>
-            </pre>
         </>
     )
 }

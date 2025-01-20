@@ -30,7 +30,7 @@ export function drawSemiplane(
         p2 = b / a2
     }
 
-    const normalize = Math.sqrt(a1 ** 2 + a2 ** 2) * 1.5
+    const normalize = Math.sqrt(a1 ** 2 + a2 ** 2) * 1.25
 
     const gradient = g.createLinearGradient(p1, p2, p1 - a1 / normalize, p2 - a2 / normalize)
     gradient.addColorStop(0, gradientAccent)
@@ -79,5 +79,42 @@ export function drawSemiplane(
         g.moveTo(-MAX_LINE_SIZE, (b - a1 * -MAX_LINE_SIZE) / a2)
         g.lineTo(MAX_LINE_SIZE, (b - a1 * MAX_LINE_SIZE) / a2)
     }
+    g.stroke()
+}
+
+export function drawSimpleArrow(
+    g: CanvasRenderingContext2D,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    size: number
+) {
+    const arrowLength = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+    g.save()
+    g.beginPath()
+    g.translate(x1, y1)
+    g.rotate(Math.atan2(y2 - y1, x2 - x1))
+    g.moveTo(0, 0)
+    g.lineTo(arrowLength, 0)
+
+    g.moveTo(arrowLength - size, -size)
+    g.lineTo(arrowLength, 0)
+    g.moveTo(arrowLength - size, +size)
+    g.lineTo(arrowLength, 0)
+    g.stroke()
+    g.restore()
+}
+
+export function fillDot(g: CanvasRenderingContext2D, x: number, y: number, radius: number) {
+    g.beginPath()
+    g.arc(x, y, radius, 0, 2 * Math.PI)
+    g.fill()
+}
+
+export function strokeDot(g: CanvasRenderingContext2D, x: number, y: number, radius: number) {
+    g.beginPath()
+    g.arc(x, y, radius, 0, 2 * Math.PI)
     g.stroke()
 }
