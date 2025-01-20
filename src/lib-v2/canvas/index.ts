@@ -88,22 +88,28 @@ export function drawSimpleArrow(
     y1: number,
     x2: number,
     y2: number,
-    size: number
+    size: number,
+    color: string = '#333'
 ) {
     const arrowLength = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
     g.save()
+    g.strokeStyle = color
+    g.fillStyle = color
+
     g.beginPath()
     g.translate(x1, y1)
     g.rotate(Math.atan2(y2 - y1, x2 - x1))
     g.moveTo(0, 0)
-    g.lineTo(arrowLength, 0)
-
-    g.moveTo(arrowLength - size, -size)
-    g.lineTo(arrowLength, 0)
-    g.moveTo(arrowLength - size, +size)
-    g.lineTo(arrowLength, 0)
+    g.lineTo(arrowLength - size / 2, 0)
     g.stroke()
+
+    g.beginPath()
+    g.moveTo(arrowLength, 0)
+    g.lineTo(arrowLength - size, -size * 0.75)
+    g.lineTo(arrowLength - size, +size * 0.75)
+    g.lineTo(arrowLength, 0)
+    g.fill()
     g.restore()
 }
 
@@ -116,5 +122,12 @@ export function fillDot(g: CanvasRenderingContext2D, x: number, y: number, radiu
 export function strokeDot(g: CanvasRenderingContext2D, x: number, y: number, radius: number) {
     g.beginPath()
     g.arc(x, y, radius, 0, 2 * Math.PI)
+    g.stroke()
+}
+
+export function strokeInfiniteLine(g: CanvasRenderingContext2D, x1: number, y1: number, angle: number) {
+    g.beginPath()
+    g.moveTo(x1 - Math.cos(angle) * MAX_LINE_SIZE, y1 - Math.sin(angle) * MAX_LINE_SIZE)
+    g.lineTo(x1 + Math.cos(angle) * MAX_LINE_SIZE, y1 + Math.sin(angle) * MAX_LINE_SIZE)
     g.stroke()
 }

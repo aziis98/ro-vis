@@ -6,14 +6,18 @@ export const DisplayProblemInput = ({ problemInput }: { problemInput: ProblemInp
     const { A, b, c, B } = problemInput
 
     return (
-        <Katex
-            formula={[
-                '\\begin{cases} \\max c^t x \\\\ Ax \\leq b \\end{cases}',
-                `A = ${matrixToLatex(A)}`,
-                `b = ${vectorToLatex(b)}`,
-                `c^t = ${rowVectorToLatex(c)}`,
-                `B = \\{${B.map(r => (r + 1).toString()).join(', ')}\\}`,
-            ].join(' \\qquad ')}
-        />
+        <div class="scrollable">
+            <div class="scroll-content">
+                <Katex
+                    formula={[
+                        '\\begin{cases} \\max c^t x \\\\ Ax \\leq b \\end{cases}',
+                        `A = ${matrixToLatex(A)}`,
+                        `b = ${vectorToLatex(b)}`,
+                        `c^t = ${rowVectorToLatex(c)}`,
+                        `B = \\{${B.map(r => (r + 1).toString()).join(', ')}\\}`,
+                    ].join(' \\qquad ')}
+                />
+            </div>
+        </div>
     )
 }

@@ -26,6 +26,14 @@ export abstract class Vector<T extends FieldValue<T>> {
         return new VectorDense(this.getData().map(v => v.neg()))
     }
 
+    leq(vector: Vector<T>): boolean {
+        if (this.size !== vector.size) {
+            throw new Error('Vector dimensions do not match')
+        }
+
+        return this.getData().every((v, i) => v.leq(vector.at(i)))
+    }
+
     with(indices: number[], vector: Vector<T>): Vector<T> {
         if (indices.length !== vector.size) {
             throw new Error('Vector dimensions do not match')

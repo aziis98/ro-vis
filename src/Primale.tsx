@@ -1,5 +1,6 @@
+import { MobileScrollable } from './components'
 import { Katex } from './Katex'
-import { fillDot, drawSemiplane, drawSimpleArrow } from './lib-v2/canvas'
+import { fillDot, drawSemiplane, drawSimpleArrow, strokeInfiniteLine } from './lib-v2/canvas'
 import { range } from './lib-v2/math'
 import { Matrix } from './lib-v2/matrix'
 import { Rational } from './lib-v2/rationals'
@@ -47,7 +48,7 @@ const PrimalStep = ({
     return (
         <div class="step">
             <div class="algebraic-step">
-                <div class="row">
+                <div class="comment">
                     <p>
                         Iterazione <strong>{iter + 1}</strong> dell'algoritmo
                     </p>
@@ -55,11 +56,11 @@ const PrimalStep = ({
 
                 {comments.map(comment =>
                     comment.type === 'formula' ? (
-                        <div class="row">
+                        <MobileScrollable>
                             <Katex formula={comment.content} />
-                        </div>
+                        </MobileScrollable>
                     ) : (
-                        <div class="row">
+                        <div class="comment">
                             <MiniMark content={comment.content} />
                         </div>
                     )
@@ -94,6 +95,9 @@ export const Primale = ({ input }: { input: ProblemInput }) => {
 
     return (
         <div class="steps">
+            <div class="title">
+                <h2>Svolgimento</h2>
+            </div>
             {problemOutput.steps.map((step, iter) => (
                 <PrimalStep
                     {...{
@@ -159,6 +163,9 @@ const PrimalCanvas = ({
         g.textAlign = 'center'
         g.textBaseline = 'middle'
 
+        const [c1, c2] = c.getData()
+        const cLen = Math.sqrt(c1.toNumber() ** 2 + c2.toNumber() ** 2)
+
         // // draw y axis arrow
         // g.beginPath()
         // g.moveTo(width / 2, height / 2)
@@ -176,27 +183,6 @@ const PrimalCanvas = ({
         // g.moveTo(width - 5, height / 2)
         // g.lineTo(width - 15, height / 2 + 10)
         // g.stroke()
-
-        // draw c vector
-        const [c1, c2] = c.getData()
-        const cLen = Math.sqrt(c1.toNumber() ** 2 + c2.toNumber() ** 2)
-
-        // g.save()
-        g.strokeStyle = 'darkgreen'
-        g.lineWidth = 2
-        drawSimpleArrow(
-            g,
-            50,
-            height - 50,
-            50 + (c1.toNumber() / cLen) * 40,
-            height - 50 - (c2.toNumber() / cLen) * 40,
-            5
-        )
-
-        g.fillStyle = 'darkgreen'
-        fillDot(g, 50, height - 50, 4)
-
-        g.fillText(`c`, 50 - (c1.toNumber() / cLen) * 20, height - 50 + (c2.toNumber() / cLen) * 20)
 
         // g.beginPath()
         // g.translate(50, height - 50)
@@ -219,6 +205,22 @@ const PrimalCanvas = ({
         g.translate(width / 2, height / 2)
         g.scale(width / 2, -width / 2)
         g.scale(1 / 10, 1 / 10)
+
+        // draw grid
+
+        g.strokeStyle = '#ddd'
+        g.lineWidth = 20 / g.canvas.width
+        for (let i = -10; i <= 10; i++) {
+            strokeInfiniteLine(g, i, 0, Math.PI / 2)
+        }
+        for (let i = -9; i <= 9; i++) {
+            strokeInfiniteLine(g, 0, i, 0)
+        }
+
+        g.strokeStyle = '#333'
+        g.lineWidth = 40 / g.canvas.width
+        drawSimpleArrow(g, 0, 0, 9.8, 0, 0.35, '#444')
+        drawSimpleArrow(g, 0, 0, 0, 9.8, 0.35, '#444')
 
         // draw semiplanes
 
@@ -248,15 +250,15 @@ const PrimalCanvas = ({
         if (x) {
             const [x1, x2] = x.getData()
 
-            g.lineWidth = 30 / g.canvas.width
-            g.strokeStyle = 'darkgreen'
+            g.lineWidth = 50 / g.canvas.width
             drawSimpleArrow(
                 g,
                 x1.toNumber(),
                 x2.toNumber(),
                 x1.toNumber() + c1.toNumber() / cLen,
                 x2.toNumber() + c2.toNumber() / cLen,
-                0.125
+                0.25,
+                'darkgreen'
             )
 
             // draw xi
@@ -264,7 +266,6 @@ const PrimalCanvas = ({
                 const [xi1, xi2] = xi.getData()
                 const xiLen = Math.sqrt(xi1.toNumber() ** 2 + xi2.toNumber() ** 2)
 
-                g.strokeStyle = '#44d'
                 g.lineWidth = 50 / g.canvas.width
                 drawSimpleArrow(
                     g,
@@ -272,13 +273,34 @@ const PrimalCanvas = ({
                     x2.toNumber(),
                     x1.toNumber() + xi1.toNumber() / xiLen,
                     x2.toNumber() + xi2.toNumber() / xiLen,
-                    0.125
+                    0.25,
+                    '#44d'
                 )
             }
 
             g.fillStyle = '#d44'
             fillDot(g, x1.toNumber(), x2.toNumber(), 0.2)
         }
+
+        g.resetTransform()
+
+        // draw c vector
+
+        g.lineWidth = 2
+        drawSimpleArrow(
+            g,
+            50,
+            height - 50,
+            50 + (c1.toNumber() / cLen) * 40,
+            height - 50 - (c2.toNumber() / cLen) * 40,
+            7,
+            'darkgreen'
+        )
+
+        g.fillStyle = 'darkgreen'
+        fillDot(g, 50, height - 50, 4)
+
+        g.fillText(`c`, 50 - (c1.toNumber() / cLen) * 20, height - 50 + (c2.toNumber() / cLen) * 20)
     }
 
     return <canvas ref={render} />

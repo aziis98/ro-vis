@@ -4,6 +4,8 @@ import { parseSafeProblemInput } from './parser-problem'
 import { DisplayProblemInput } from './DisplayProblemInput'
 import { Primale } from './Primale'
 
+import exampleProblems from './example-problems.json'
+
 const INITIAL_PROBLEM_INPUT = `
 c' = 500 200;
 
@@ -37,18 +39,30 @@ const useLocalStorage = <T,>(key: string, initialValue: T) => {
 }
 
 const App = () => {
-    const [currentProblemName, setCurrentProblemName] = useState('Pintel')
-    const [savedProblems, setSavedProblems] = useLocalStorage<{ name: string; source: string }[]>('savedProblems', [
-        { name: 'Pintel', source: INITIAL_PROBLEM_INPUT },
-    ])
+    const [currentProblemName, setCurrentProblemName] = useLocalStorage(
+        'ricerca-operativa.currentProblemName',
+        'Pintel'
+    )
+    const [savedProblems, setSavedProblems] = useLocalStorage<{ name: string; source: string }[]>(
+        'ricerca-operativa.savedProblems',
+        exampleProblems
+    )
 
-    const [problemInput, setProblemInput] = useState(INITIAL_PROBLEM_INPUT)
+    const [problemInput, setProblemInput] = useState(
+        savedProblems.find(p => p.name === currentProblemName)?.source ?? INITIAL_PROBLEM_INPUT
+    )
 
     const problemValuesResult = parseSafeProblemInput(problemInput)
 
     return (
         <>
-            <h1>Ricerca Operativa / Programmazione Lineare</h1>
+            <h1>
+                Ricerca Operativa / Programmazione Lineare
+                <small>
+                    {' '}
+                    by <a href="aziis98.com">@aziis98</a>
+                </small>
+            </h1>
             <p>
                 Questo sito è un progetto per il{' '}
                 <a href="https://didawiki.cli.di.unipi.it/doku.php/matematica/ro/start">corso di Ricerca Operativa</a>{' '}
@@ -113,6 +127,7 @@ const App = () => {
                 rows={Math.max(problemInput.split('\n').length, 5)}
                 cols={100}
             ></textarea>
+
             <h2>Problema di Input</h2>
             {'result' in problemValuesResult ? (
                 <DisplayProblemInput problemInput={problemValuesResult.result} />
@@ -121,8 +136,6 @@ const App = () => {
                     <code>{problemValuesResult.error}</code>
                 </p>
             )}
-
-            <h2>Svolgimento</h2>
 
             {'result' in problemValuesResult && <Primale input={problemValuesResult.result} />}
         </>
