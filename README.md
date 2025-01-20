@@ -1,4 +1,4 @@
-# math-canvas-v2
+# Visualizzazioni di Ricerca Operativa
 
 ## Usage
 
