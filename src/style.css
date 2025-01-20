@@ -16,6 +16,10 @@
     html,
     body {
         min-height: 100%;
+
+        @media (width < 70rem) {
+            overflow-x: hidden;
+        }
     }
 
     img {
@@ -43,6 +47,8 @@
 
     textarea,
     input[type='text'] {
+        font-size: 16px;
+
         background: #fff;
         border: 1px solid #888;
         min-height: 1.75rem;
@@ -50,10 +56,6 @@
         border-radius: 0.25rem;
 
         box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
-    }
-
-    input[type='text'] {
-        font-size: 16px;
     }
 
     textarea {
@@ -128,9 +130,8 @@
     }
 
     canvas {
-        display: block;
+        display: grid;
         width: 100%;
-
         aspect-ratio: 1 / 1;
 
         border: 1px solid #ddd;
@@ -143,7 +144,7 @@
         display: grid;
         grid-auto-flow: row;
         justify-items: center;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr auto;
 
         border: 1px solid #ddd;
         box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
@@ -161,7 +162,7 @@
             text-align: center;
             padding-bottom: 1rem;
 
-            @media (width < 768px) {
+            @media (width < 70rem) {
                 grid-column: span 1;
             }
         }
@@ -176,7 +177,7 @@
             /* align-items: center; */
             gap: 0;
 
-            @media (width < 768px) {
+            @media (width < 70rem) {
                 grid-column: span 1;
                 grid-template-columns: 1fr;
             }
@@ -200,13 +201,28 @@
             }
 
             > .geometric-step {
-                @media (width < 768px) {
-                    min-width: 0;
+                display: grid;
+
+                canvas {
+                    width: 25rem;
+                    height: 25rem;
+
+                    @media (width < 70rem) {
+                        width: calc(100vw - 4rem);
+                        height: calc(100vw - 4rem);
+
+                        max-width: 25rem;
+                        max-height: 25rem;
+                    }
+                }
+
+                @media (width < 70rem) {
+                    padding: 0 1rem;
                 }
             }
 
             > * {
-                min-width: 30rem;
+                min-width: 25rem;
             }
 
             padding: 2rem 0;
@@ -215,7 +231,7 @@
                 border-top: 1px solid #ddd;
             }
 
-            @media (width < 768px) {
+            @media (width < 70rem) {
                 max-width: 100%;
                 gap: 1rem;
                 padding: 1rem 0;
@@ -226,7 +242,7 @@
             }
         }
 
-        @media (width < 768px) {
+        @media (width < 70rem) {
             grid-template-columns: 1fr;
             padding: 1rem 0 0 0;
             max-width: 100%;
@@ -256,7 +272,7 @@
             display: grid;
         }
 
-        @media (width < 768px) {
+        @media (width < 70rem) {
             position: relative;
 
             > .scroll-content {
@@ -287,7 +303,7 @@
             flex-grow: 1;
         }
 
-        @media (width < 768px) {
+        @media (width < 70rem) {
             flex-wrap: wrap;
         }
     }

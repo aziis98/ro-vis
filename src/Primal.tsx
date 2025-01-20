@@ -85,6 +85,8 @@ const PrimalStep = ({
 export const Primal = ({ input }: { input: ProblemInput }) => {
     // const steps: Step[] = [{ B: input.B }]
 
+    const timerStart = performance.now()
+
     const problemOutput = computePrimalSimplexSteps({
         A: input.A,
         b: input.b,
@@ -93,8 +95,10 @@ export const Primal = ({ input }: { input: ProblemInput }) => {
         maxIterations: 10,
     })
 
+    const timerDelta = performance.now() - timerStart
+
     return (
-        <div class="steps">
+        <div class="steps" title={`Calcolato in ${timerDelta}ms`}>
             <div class="title">
                 <h2>Svolgimento</h2>
             </div>
@@ -144,15 +148,14 @@ const PrimalCanvas = ({
         $canvas.width = $canvas.offsetWidth * window.devicePixelRatio
         $canvas.height = $canvas.offsetHeight * window.devicePixelRatio
 
+        const width = $canvas.width / window.devicePixelRatio
+        const height = $canvas.height / window.devicePixelRatio
+
         const g = $canvas.getContext('2d')
         if (!g) {
             throw new Error('Could not get 2d context')
         }
 
-        const width = $canvas.offsetWidth
-        const height = $canvas.offsetHeight
-
-        g.clearRect(0, 0, width, height)
         g.strokeStyle = '#333'
         g.lineWidth = 2
         g.lineCap = 'round'
@@ -164,6 +167,7 @@ const PrimalCanvas = ({
         g.textBaseline = 'middle'
 
         g.scale(window.devicePixelRatio, window.devicePixelRatio)
+        g.clearRect(0, 0, width, height)
 
         const [c1, c2] = c.getData()
         const cLen = Math.sqrt(c1.toNumber() ** 2 + c2.toNumber() ** 2)
