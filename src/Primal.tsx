@@ -262,8 +262,8 @@ const PrimalCanvas = ({
                 const b_i = b.at(i)
 
                 drawSemiplane(g, a1.toNumber(), a2.toNumber(), b_i.toNumber(), {
-                    lineColor: '#040',
-                    lineWidth: 3,
+                    lineColor: '#488',
+                    lineWidth: 6,
                 })
             })
 
@@ -295,7 +295,8 @@ const PrimalCanvas = ({
                         x1.toNumber() + xi1.toNumber() / xiLen,
                         x2.toNumber() + xi2.toNumber() / xiLen,
                         0.25,
-                        '#44d'
+                        // '#44d'
+                        '#44f'
                     )
                 }
 

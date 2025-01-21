@@ -114,7 +114,7 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
                 type: 'formula',
                 content: [
                     String.raw`I(\bar{x})`,
-                    String.raw`\{ i \in \{1, \dots, m\} \mid A_i \bar{x}_i = b_i \}`,
+                    String.raw`\{ i \in \{1, \dots, ${A.rows}\} \mid A_i \bar{x}_i = b_i \}`,
                     indexSetToLatex(I_x),
                 ].join(' = '),
             })
@@ -173,12 +173,16 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
 
                 comments.push({
                     type: 'formula',
+                    content: `N = \\{1, \\dots, ${A.rows}\\} \\setminus B = ${indexSetToLatex(N)}`,
+                })
+
+                comments.push({
+                    type: 'formula',
                     content: [
-                        [`N = \\{1, \\dots, m\\} \\setminus B = ${indexSetToLatex(N)}`],
-                        [`A_N \\xi`, `${matrixToLatex(A_N)} ${vectorToLatex(xi)}`, `${vectorToLatex(A_N__xi)}`].join(
-                            ' = '
-                        ),
-                    ].join(' \\qquad '),
+                        `A_N \\xi`,
+                        `${matrixToLatex(A_N)} ${vectorToLatex(xi)}`,
+                        `${vectorToLatex(A_N__xi)}`,
+                    ].join(' = '),
                 })
 
                 if (!A_N__xi.getData().every(x => x.leq(RationalField.zero))) {
