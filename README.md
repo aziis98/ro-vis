@@ -1,6 +1,28 @@
-# Visualizzazioni di Ricerca Operativa
+# Ricerca Operativa / PL / Algoritmo del Simplesso
 
-## Usage
+Questo sito è un progetto per il corso di Ricerca Operativa dell'Università di Pisa per visualizzare
+automaticamente tutti i passaggi dell'algoritmo del simplesso primale.
+
+## Caratteristiche principali
+
+-   Visualizza automaticamente tutti i passaggi dell'algoritmo del simplesso primale
+
+-   Gestisce problemi d ricerca operativa in formato matriciale
+
+-   Permette il salvataggio e il caricamento di problemi
+
+-   Utilizza Preact per una interfaccia interattiva
+
+## Funzionamento
+
+1. Inserisci i dati del problema nel campo di testo nel formato specificato
+
+2. Il sistema analizza l'input mostra il risultato dell'algoritmo con tutti i passaggi algebrici
+   dell'algoritmo con una visualizzazione geometrica dello stato corrente
+
+3. Puoi salvare i problemi inseriti e caricarli in seguito
+
+## Svilluppo
 
 ### Setup
 
