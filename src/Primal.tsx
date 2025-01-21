@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'preact/hooks'
 import { MobileScrollable } from './components'
 import { Katex } from './Katex'
 import { fillDot, drawSemiplane, drawSimpleArrow, strokeInfiniteLine } from './lib-v2/canvas'
@@ -83,42 +84,54 @@ const PrimalStep = ({
 }
 
 export const Primal = ({ input }: { input: ProblemInput }) => {
-    // const steps: Step[] = [{ B: input.B }]
+    const [problemOutput, setProblemOutput] = useState<ReturnType<typeof computePrimalSimplexSteps> | null>(null)
+    const [timerDelta, setTimerDelta] = useState<number | null>(null)
 
-    const timerStart = performance.now()
+    useEffect(() => {
+        const timerStart = performance.now()
+        const output = computePrimalSimplexSteps({
+            A: input.A,
+            b: input.b,
+            c: input.c,
+            B: input.B,
+            maxIterations: 10,
+        })
+        const elapsedTime = performance.now() - timerStart
 
-    const problemOutput = computePrimalSimplexSteps({
-        A: input.A,
-        b: input.b,
-        c: input.c,
-        B: input.B,
-        maxIterations: 10,
-    })
-
-    const timerDelta = performance.now() - timerStart
+        setProblemOutput(output)
+        setTimerDelta(elapsedTime)
+    }, [input])
 
     return (
         <div class="steps" title={`Calcolato in ${timerDelta}ms`}>
-            <div class="title">
-                <h2>Svolgimento</h2>
-            </div>
-            {problemOutput.steps.map((step, iter) => (
-                <PrimalStep
-                    {...{
-                        iter,
+            {problemOutput ? (
+                <>
+                    <div class="title">
+                        <h2>Svolgimento</h2>
+                    </div>
+                    {problemOutput.steps.map((step, iter) => (
+                        <PrimalStep
+                            {...{
+                                iter,
 
-                        A: input.A,
-                        b: input.b,
-                        c: input.c,
+                                A: input.A,
+                                b: input.b,
+                                c: input.c,
 
-                        B: step.B,
-                        x: step.x,
-                        xi: step.xi,
+                                B: step.B,
+                                x: step.x,
+                                xi: step.xi,
 
-                        comments: step.comments,
-                    }}
-                />
-            ))}
+                                comments: step.comments,
+                            }}
+                        />
+                    ))}
+                </>
+            ) : (
+                <div class="title">
+                    <h2>Loading...</h2>
+                </div>
+            )}
         </div>
     )
 }

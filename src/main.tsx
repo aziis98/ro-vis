@@ -1,3 +1,6 @@
+import '@fontsource-variable/jetbrains-mono/index.css'
+import '@fontsource-variable/open-sans/index.css'
+
 import { render } from 'preact'
 import { useState } from 'preact/hooks'
 import { parseSafeProblemInput } from './parser-problem'
@@ -58,20 +61,17 @@ const App = () => {
     return (
         <>
             <h1>
-                Ricerca Operativa / Programmazione Lineare
+                Ricerca Operativa / PL / Algoritmo del Simplesso
                 <small>
                     {' '}
-                    by <a href="aziis98.com">@aziis98</a>
+                    by <a href="https://poisson.phc.dm.unipi.it/~delucreziis/">@aziis98</a>
                 </small>
             </h1>
             <p>
                 Questo sito è un progetto per il{' '}
                 <a href="https://didawiki.cli.di.unipi.it/doku.php/matematica/ro/start">corso di Ricerca Operativa</a>{' '}
                 dell'Università di Pisa per visualizzare automaticamente tutti i passaggi dell'
-                <a href="https://it.wikipedia.org/wiki/Algoritmo_del_simplesso">
-                    algoritmo del simplesso primale e duale
-                </a>
-                .
+                <a href="https://it.wikipedia.org/wiki/Algoritmo_del_simplesso">algoritmo del simplesso primale</a>.
             </p>
             <h2>Visualizzazione</h2>
             <p>I dati del problema vanno inseriti nel seguente campo di testo nel formato:</p>

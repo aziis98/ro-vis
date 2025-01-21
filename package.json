@@ -16,6 +16,8 @@
         "typescript": "^5.0.0"
     },
     "dependencies": {
+        "@fontsource-variable/jetbrains-mono": "^5.1.2",
+        "@fontsource-variable/open-sans": "^5.1.1",
         "katex": "^0.16.20",
         "preact": "^10.25.4"
     }
