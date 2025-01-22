@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 import { MobileScrollable } from './components'
 import { Katex } from './Katex'
 import { fillDot, drawSemiplane, drawSimpleArrow, strokeInfiniteLine } from './lib-v2/canvas'
