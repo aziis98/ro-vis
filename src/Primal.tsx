@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks'
+import { useEffect, useMemo, useState } from 'preact/hooks'
 import { MobileScrollable } from './components'
 import { Katex } from './Katex'
 import { fillDot, drawSemiplane, drawSimpleArrow, strokeInfiniteLine } from './lib-v2/canvas'
@@ -68,26 +68,20 @@ const PrimalStep = ({
                 )}
             </div>
             <div class="geometric-step">
-                <PrimalCanvas
-                    {...{
-                        A,
-                        b,
-                        c,
-                        B,
-                        x,
-                        xi,
-                    }}
-                />
+                <PrimalCanvas {...{ A, b, c, B, x, xi }} />
             </div>
         </div>
     )
 }
 
 export const Primal = ({ input }: { input: ProblemInput }) => {
-    const [problemOutput, setProblemOutput] = useState<ReturnType<typeof computePrimalSimplexSteps> | null>(null)
-    const [timerDelta, setTimerDelta] = useState<number | null>(null)
+    const [[problemInput, problemOutput, elapsedTime], setProblem] = useState<
+        [ProblemInput, ReturnType<typeof computePrimalSimplexSteps>, number] | [null, null]
+    >([null, null])
 
     useEffect(() => {
+        console.log('Computing primal simplex steps')
+
         const timerStart = performance.now()
         const output = computePrimalSimplexSteps({
             A: input.A,
@@ -97,13 +91,13 @@ export const Primal = ({ input }: { input: ProblemInput }) => {
             maxIterations: 10,
         })
         const elapsedTime = performance.now() - timerStart
+        console.log('Computed primal simplex steps in', elapsedTime, 'ms')
 
-        setProblemOutput(output)
-        setTimerDelta(elapsedTime)
+        setProblem([input, output, elapsedTime])
     }, [input])
 
     return (
-        <div class="steps" title={`Calcolato in ${timerDelta}ms`}>
+        <div class="steps" title={elapsedTime ? `Computed in ${elapsedTime}ms` : `Computing...`}>
             {problemOutput ? (
                 <>
                     <div class="title">
@@ -111,12 +105,13 @@ export const Primal = ({ input }: { input: ProblemInput }) => {
                     </div>
                     {problemOutput.steps.map((step, iter) => (
                         <PrimalStep
+                            key={iter}
                             {...{
                                 iter,
 
-                                A: input.A,
-                                b: input.b,
-                                c: input.c,
+                                A: problemInput.A,
+                                b: problemInput.b,
+                                c: problemInput.c,
 
                                 B: step.B,
                                 x: step.x,
@@ -136,15 +131,7 @@ export const Primal = ({ input }: { input: ProblemInput }) => {
     )
 }
 
-const PrimalCanvas = ({
-    A,
-    b,
-    c,
-    B,
-
-    x,
-    xi,
-}: {
+type PrimalCanvasProps = {
     A: Matrix<Rational>
     b: Vector<Rational>
     c: Vector<Rational>
@@ -152,11 +139,15 @@ const PrimalCanvas = ({
 
     x?: Vector<Rational>
     xi?: Vector<Rational>
-}) => {
-    const render = ($canvas: HTMLCanvasElement | null) => {
+}
+
+const PrimalCanvas = ({ A, b, c, B, x, xi }: PrimalCanvasProps) => {
+    const render = ($canvas: HTMLCanvasElement | null, props: PrimalCanvasProps) => {
         if (!$canvas) {
             return
         }
+
+        const { A, b, c, B, x, xi } = props
 
         $canvas.width = $canvas.offsetWidth * window.devicePixelRatio
         $canvas.height = $canvas.offsetHeight * window.devicePixelRatio
@@ -256,7 +247,6 @@ const PrimalCanvas = ({
                 })
 
             // draw semiplanes in B
-
             B.forEach(i => {
                 const [a1, a2] = A.rowAt(i).getData()
                 const b_i = b.at(i)
@@ -325,7 +315,7 @@ const PrimalCanvas = ({
         g.fillText(`c`, 50 - (c1.toNumber() / cLen) * 20, height - 50 + (c2.toNumber() / cLen) * 20)
     }
 
-    return <canvas ref={render} />
+    return <canvas ref={$canvas => render($canvas, { A, b, c, B, x, xi })} />
 }
 
 // export const PrimaleStep = ({ input, step }: { input: ProblemInput; step: Step }) => {
