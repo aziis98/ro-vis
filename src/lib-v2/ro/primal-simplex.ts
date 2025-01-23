@@ -21,6 +21,7 @@ export type ProblemStep = {
 
     x?: Vector<Rational>
     xi?: Vector<Rational>
+    y_B?: Vector<Rational>
 
     comments: ProblemComment[]
 }
@@ -52,6 +53,7 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
     let B = input.B
     let stepResult_B: number[] | undefined = undefined
     let stepResult_xi: Vector<Rational> | undefined = undefined
+    let stepResult_y_B: Vector<Rational> | undefined = undefined
 
     let status: ProblemStatus | null = null
 
@@ -91,6 +93,7 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
             })
 
             const y_B = A_B_inverse.transpose().apply(c)
+            stepResult_y_B = y_B
 
             comments.push({
                 type: 'formula',
@@ -263,6 +266,7 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
             B,
             x,
             xi: stepResult_xi,
+            y_B: stepResult_y_B,
 
             comments,
         })
@@ -272,6 +276,7 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
 
             stepResult_B = undefined
             stepResult_xi = undefined
+            stepResult_y_B = undefined
         }
     }
 

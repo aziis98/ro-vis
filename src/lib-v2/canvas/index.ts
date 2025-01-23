@@ -11,14 +11,22 @@ export function drawSemiplane(
     {
         gradientAccent,
         gradientTransparent,
+        gradientSize,
         lineColor,
         lineWidth,
-    }: { gradientAccent?: string; gradientTransparent?: string; lineColor?: string; lineWidth?: number } = {}
+    }: {
+        gradientAccent?: string
+        gradientTransparent?: string
+        gradientSize?: number
+        lineColor?: string
+        lineWidth?: number
+    } = {}
 ) {
     gradientAccent ??= '#ffa90066'
     gradientTransparent ??= '#ffa90000'
     lineColor ??= '#9c6700'
     lineWidth ??= 2
+    gradientSize ??= 1 / 1.25
 
     // The gradient is perpendicular to the line, first generate a point on the line
     let [p1, p2] = [0, 0]
@@ -30,7 +38,7 @@ export function drawSemiplane(
         p2 = b / a2
     }
 
-    const normalize = Math.sqrt(a1 ** 2 + a2 ** 2) * 1.25
+    const normalize = Math.sqrt(a1 ** 2 + a2 ** 2) / gradientSize
 
     const gradient = g.createLinearGradient(p1, p2, p1 - a1 / normalize, p2 - a2 / normalize)
     gradient.addColorStop(0, gradientAccent)
@@ -89,7 +97,8 @@ export function drawSimpleArrow(
     x2: number,
     y2: number,
     size: number,
-    color: string = '#333'
+    color: string = '#333',
+    lineDash: number[] = []
 ) {
     const arrowLength = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
     const actualSize = (500 * size) / g.canvas.offsetWidth
@@ -97,6 +106,7 @@ export function drawSimpleArrow(
     g.save()
     g.strokeStyle = color
     g.fillStyle = color
+    g.setLineDash(lineDash)
 
     g.beginPath()
     g.translate(x1, y1)

@@ -4,7 +4,7 @@ import { Katex } from './Katex'
 import { fillDot, drawSemiplane, drawSimpleArrow, strokeInfiniteLine } from './lib-v2/canvas'
 import { range } from './lib-v2/math'
 import { Matrix } from './lib-v2/matrix'
-import { Rational } from './lib-v2/rationals'
+import { Rational, RationalField } from './lib-v2/rationals'
 import { ProblemComment, computePrimalSimplexSteps } from './lib-v2/ro/primal-simplex'
 import { Vector } from './lib-v2/vector'
 import { MiniMark } from './MiniMark'
@@ -31,6 +31,7 @@ const PrimalStep = ({
 
     x,
     xi,
+    y_B,
 
     comments,
 }: {
@@ -43,6 +44,7 @@ const PrimalStep = ({
     B: number[]
     x?: Vector<Rational>
     xi?: Vector<Rational>
+    y_B?: Vector<Rational>
 
     comments: ProblemComment[]
 }) => {
@@ -68,7 +70,8 @@ const PrimalStep = ({
                 )}
             </div>
             <div class="geometric-step">
-                <PrimalCanvas {...{ A, b, c, B, x, xi }} />
+                <PrimalCanvas {...{ A, b, c, B, x, xi, y_B }} />
+                <PrimalCanvasCone {...{ A, b, c, B, x, xi, y_B }} />
             </div>
         </div>
     )
@@ -90,6 +93,7 @@ export const Primal = ({ input }: { input: ProblemInput }) => {
             B: input.B,
             maxIterations: 10,
         })
+
         const elapsedTime = performance.now() - timerStart
         console.log('Computed primal simplex steps in', elapsedTime, 'ms')
 
@@ -116,6 +120,7 @@ export const Primal = ({ input }: { input: ProblemInput }) => {
                                 B: step.B,
                                 x: step.x,
                                 xi: step.xi,
+                                y_B: step.y_B,
 
                                 comments: step.comments,
                             }}
@@ -131,7 +136,7 @@ export const Primal = ({ input }: { input: ProblemInput }) => {
     )
 }
 
-type PrimalCanvasProps = {
+type CanvasProps = {
     A: Matrix<Rational>
     b: Vector<Rational>
     c: Vector<Rational>
@@ -139,10 +144,11 @@ type PrimalCanvasProps = {
 
     x?: Vector<Rational>
     xi?: Vector<Rational>
+    y_B?: Vector<Rational>
 }
 
-const PrimalCanvas = ({ A, b, c, B, x, xi }: PrimalCanvasProps) => {
-    const render = ($canvas: HTMLCanvasElement | null, props: PrimalCanvasProps) => {
+const PrimalCanvas = ({ A, b, c, B, x, xi }: CanvasProps) => {
+    const render = ($canvas: HTMLCanvasElement | null, props: CanvasProps) => {
         if (!$canvas) {
             return
         }
@@ -175,42 +181,6 @@ const PrimalCanvas = ({ A, b, c, B, x, xi }: PrimalCanvasProps) => {
 
         const [c1, c2] = c.getData()
         const cLen = Math.sqrt(c1.toNumber() ** 2 + c2.toNumber() ** 2)
-
-        // // draw y axis arrow
-        // g.beginPath()
-        // g.moveTo(width / 2, height / 2)
-        // g.lineTo(width / 2, 5)
-        // g.lineTo(width / 2 - 10, 15)
-        // g.moveTo(width / 2, 5)
-        // g.lineTo(width / 2 + 10, 15)
-        // g.stroke()
-
-        // // draw x axis arrow
-        // g.beginPath()
-        // g.moveTo(width / 2, height / 2)
-        // g.lineTo(width - 5, height / 2)
-        // g.lineTo(width - 15, height / 2 - 10)
-        // g.moveTo(width - 5, height / 2)
-        // g.lineTo(width - 15, height / 2 + 10)
-        // g.stroke()
-
-        // g.beginPath()
-        // g.translate(50, height - 50)
-        // g.rotate(Math.atan2(c2.toNumber(), c1.toNumber()))
-        // g.moveTo(0, 0)
-        // g.lineTo(30, 0)
-        // g.moveTo(30, 0)
-        // g.lineTo(25, -5)
-        // g.moveTo(30, 0)
-        // g.lineTo(25, 5)
-        // g.stroke()
-        // g.restore()
-
-        // g.fillStyle = '#333'
-        // g.font = '16px sans-serif'
-        // g.textAlign = 'center'
-        // g.textBaseline = 'middle'
-        // g.fillText(`A = ${A}`, width / 2, height / 2)
 
         g.save()
         {
@@ -318,212 +288,151 @@ const PrimalCanvas = ({ A, b, c, B, x, xi }: PrimalCanvasProps) => {
     return <canvas ref={$canvas => render($canvas, { A, b, c, B, x, xi })} />
 }
 
-// export const PrimaleStep = ({ input, step }: { input: ProblemInput; step: Step }) => {
-//     const { A, b, c } = input
+const PrimalCanvasCone = ({ A, b, c, B, x, xi, y_B }: CanvasProps) => {
+    const render = ($canvas: HTMLCanvasElement | null, props: CanvasProps) => {
+        if (!$canvas) {
+            return
+        }
 
-//     const rows = []
-//     const canvasOptions: Parameters<typeof PrimalCanvas>[0] = { A, b, c, B: step.B }
+        const { A, c, B, y_B } = props
 
-//     const A_B = A.slice({ rows: step.B })
-//     const A_B_inverse = A_B.inverse2x2()
-//     const b_B = b.slice(step.B)
+        $canvas.width = $canvas.offsetWidth * window.devicePixelRatio
+        $canvas.height = $canvas.offsetHeight * window.devicePixelRatio
 
-//     rows.push(
-//         <div class="row">
-//             <Katex
-//                 formula={[
-//                     String.raw`A_B = ${matrixToLatex(A_B)}`,
-//                     String.raw`b_B = ${vectorToLatex(b_B)}`,
-//                     String.raw`c^t = ${rowVectorToLatex(c)}`,
-//                 ].join(' \\qquad ')}
-//             />
-//         </div>
-//     )
+        const width = $canvas.width / window.devicePixelRatio
+        const height = $canvas.height / window.devicePixelRatio
 
-//     const x = A_B_inverse.apply(b_B)
-//     canvasOptions.x = x
+        const g = $canvas.getContext('2d')
+        if (!g) {
+            throw new Error('Could not get 2d context')
+        }
 
-//     rows.push(
-//         <div class="row">
-//             <Katex
-//                 formula={[
-//                     String.raw`\bar{x}`,
-//                     String.raw`A_B^{-1} b_B`,
-//                     String.raw`${matrixToLatex(A_B)}^{-1} ${vectorToLatex(b_B)}`,
-//                     String.raw`${matrixToLatex(A_B_inverse)} ${vectorToLatex(b_B)}`,
-//                     String.raw`${vectorToLatex(x)}`,
-//                 ].join(' = ')}
-//             />
-//         </div>
-//     )
+        g.strokeStyle = '#333'
+        g.lineWidth = 2
+        g.lineCap = 'round'
+        g.lineJoin = 'round'
 
-//     const y_B = A_B_inverse.transpose().apply(c)
+        g.fillStyle = '#333'
+        g.font = 'bold 16px sans-serif'
+        g.textAlign = 'center'
+        g.textBaseline = 'middle'
 
-//     rows.push(
-//         <div class="row">
-//             <Katex
-//                 formula={[
-//                     String.raw`\bar{y}_B^t`,
-//                     String.raw`c_B^t A_B^{-1}`,
-//                     String.raw`${rowVectorToLatex(c)} ${matrixToLatex(A_B_inverse)}`,
-//                     String.raw`${rowVectorToLatex(y_B)}`,
-//                 ].join(' = ')}
-//             />
-//         </div>
-//     )
+        g.scale(window.devicePixelRatio, window.devicePixelRatio)
+        g.clearRect(0, 0, width, height)
 
-//     const y_Zero = Vector.zero(RationalField, A.rows)
+        g.save()
+        {
+            g.translate(width / 2, height / 2)
+            g.scale(width / 2, -width / 2)
+            g.scale(1 / 5, 1 / 5)
 
-//     const y = y_Zero.with(step.B, y_B)
+            const [c1, c2] = c.getData()
+            const cLen = Math.sqrt(c1.toNumber() ** 2 + c2.toNumber() ** 2)
 
-//     rows.push(
-//         <div class="row">
-//             <Katex formula={String.raw`\implies \bar{y}^t = ${rowVectorToLatex(y)}`} />
-//         </div>
-//     )
+            let directions = []
 
-//     const I_x = activeIndices(input, x)
+            if (y_B) {
+                const [y1, y2] = y_B.getData()
 
-//     rows.push(
-//         <div class="row">
-//             <Katex
-//                 formula={[
-//                     String.raw`I(\bar{x})`,
-//                     String.raw`\{ i \in \{1, \dots, m\} \mid A_i \bar{x}_i = b_i \}`,
-//                     indexSetToLatex(I_x),
-//                 ].join(' = ')}
-//             />
-//         </div>
-//     )
+                if (y1.gt(RationalField.zero)) {
+                    directions.push(A.rowAt(B[0]))
+                }
+                if (y1.lt(RationalField.zero)) {
+                    directions.push(A.rowAt(B[0]).neg())
+                }
 
-//     const isDegenerate = I_x.length < A_B.rows
-//     const isDualAdmissible = y_B.getData().every(y => y.geq(RationalField.zero))
-//     const isDualDegenerate = y_B.getData().some(y => y.eq(RationalField.zero))
+                if (y2.gt(RationalField.zero)) {
+                    directions.push(A.rowAt(B[1]))
+                }
+                if (y2.lt(RationalField.zero)) {
+                    directions.push(A.rowAt(B[1]).neg())
+                }
 
-//     rows.push(
-//         <div class="row">
-//             <p>
-//                 La soluzione primale è <strong>{isDegenerate ? 'degenere' : 'non degenere'}</strong>.
-//             </p>
-//             <p>
-//                 La soluzione duale è <strong>{isDualAdmissible ? 'ammissibile' : 'non ammissibile'}</strong> e{' '}
-//                 <strong>{isDualDegenerate ? 'degenere' : 'non degenere'}</strong>.
-//             </p>
-//         </div>
-//     )
+                if (directions.length === 1) {
+                    const [[d0x, d0y]] = directions.map(v => v.getData())
+                    drawSimpleArrow(g, 0, 0, d0x.toNumber() * 3, d0y.toNumber() * 3, 0.2, '#44f')
+                }
+                if (directions.length === 2) {
+                    const [[d1x, d1y], [d2x, d2y]] = directions.map(v => v.getData())
 
-//     if (!isDualAdmissible) {
-//         const h = Math.min(...y.getData().flatMap((y, i) => (y.lt(RationalField.zero) ? [i] : [])))
+                    const d1Len = Math.sqrt(d1x.toNumber() ** 2 + d1y.toNumber() ** 2)
+                    const d2Len = Math.sqrt(d2x.toNumber() ** 2 + d2y.toNumber() ** 2)
 
-//         rows.push(
-//             <div class="row">
-//                 <Katex
-//                     formula={[
-//                         //
-//                         String.raw`h`,
-//                         String.raw`\min \{ i \in B \mid \bar{y}_i < 0 \}`,
-//                         String.raw`${h + 1}`,
-//                     ].join(' = ')}
-//                 />
-//             </div>
-//         )
+                    // draw cone
+                    g.fillStyle = '#4444ff18'
+                    g.beginPath()
+                    g.moveTo(0, 0)
+                    g.lineTo((d1x.toNumber() * 100) / d1Len, (d1y.toNumber() * 100) / d1Len)
+                    g.lineTo((d2x.toNumber() * 100) / d2Len, (d2y.toNumber() * 100) / d2Len)
+                    g.fill()
+                }
+            }
 
-//         const e_h = Vector.oneHot(RationalField, A.rows, h).slice(step.B)
-//         console.log(e_h)
+            B.forEach(i => {
+                const [a1, a2] = A.rowAt(i).getData()
 
-//         // const xi = Vec.neg(Mat.apply(A_B_inverse, e_h))
-//         const xi = A_B_inverse.apply(e_h).neg()
+                const aLen = Math.sqrt(a1.toNumber() ** 2 + a2.toNumber() ** 2)
 
-//         rows.push(
-//             <div class="row">
-//                 <Katex
-//                     formula={[
-//                         //
-//                         `\\xi`,
-//                         String.raw`-A_B^{-1} u_{B(h)}`,
-//                         String.raw`${vectorToLatex(xi)}`,
-//                     ].join(' = ')}
-//                 />
-//             </div>
-//         )
+                g.save()
+                {
+                    g.strokeStyle = '#b60'
+                    g.lineWidth = 20 / (g.canvas.width / window.devicePixelRatio)
 
-//         const N = range(0, A.rows).filter(i => !step.B.includes(i))
-//         const A_N = A.slice({ rows: N })
+                    g.setLineDash([0.2, 0.2])
+                    g.beginPath()
+                    g.moveTo((a1.toNumber() / aLen) * 10, (a2.toNumber() / aLen) * 10)
+                    g.lineTo(-(a1.toNumber() / aLen) * 10, -(a2.toNumber() / aLen) * 10)
+                    g.stroke()
+                }
+                g.restore()
 
-//         const A_N__xi = A_N.apply(xi)
+                drawSemiplane(g, a1.toNumber(), a2.toNumber(), 0, {
+                    gradientSize: 2,
+                })
+            })
 
-//         rows.push(
-//             <div class="row">
-//                 <Katex
-//                     formula={[
-//                         [`N = \\{1, \\dots, m\\} \\setminus B = ${indexSetToLatex(N)}`],
-//                         [
-//                             `A_N \\xi`,
-//                             String.raw`${matrixToLatex(A_N)} ${vectorToLatex(xi)}`,
-//                             String.raw`${vectorToLatex(A_N__xi)}`,
-//                         ].join(' = '),
-//                     ].join(' \\qquad ')}
-//                 />
-//             </div>
-//         )
+            B.forEach(i => {
+                const [a1, a2] = A.rowAt(i).getData()
 
-//         if (!A_N__xi.getData().every(x => x.leq(RationalField.zero))) {
-//             const positiveIndices = N.filter(i => A_N__xi.at(A_N.forwardRowIndices[i]).gt(RationalField.zero))
+                const aLen = Math.sqrt(a1.toNumber() ** 2 + a2.toNumber() ** 2)
 
-//             const [k, lambda] = positiveIndices
-//                 .map<[number, Rational]>(i => [i, b.at(i).sub(A.rowAt(i).dot(x)).div(A.rowAt(i).dot(xi))])
-//                 .reduce(([i1, lambda1], [i2, lambda2]) => (lambda2.lt(lambda1) ? [i2, lambda2] : [i1, lambda1]))
+                drawSimpleArrow(g, 0, 0, (a1.toNumber() / aLen) * 4, (a2.toNumber() / aLen) * 4, 0.2, '#b60')
+            })
 
-//             rows.push(
-//                 <div class="row">
-//                     <Katex
-//                         formula={[
-//                             `\\bar\\lambda`,
-//                             `\\min_i \\left\\{ \\frac{b_i - A_i \\bar{x}}{A_i \\xi} \\; \\middle| \\; i \\in N, A_i \\xi > 0 \\right\\}`,
-//                             `${lambda}`,
-//                         ].join(' = ')}
-//                     />
-//                 </div>
-//             )
-//             rows.push(
-//                 <div class="row">
-//                     <Katex
-//                         formula={[
-//                             `k`,
-//                             `\\argmin_i \\left\\{ \\bar\\lambda_i \\; \\middle| \\; i \\in N, A_i \\xi > 0 \\right\\}`,
-//                             `${k + 1}`,
-//                         ].join(' = ')}
-//                     />
-//                 </div>
-//             )
-//             rows.push(
-//                 <div class="row">
-//                     <Katex
-//                         formula={[
-//                             `\\implies B'`,
-//                             `B \\setminus \\{${h + 1}\\} \\cup \\{${k + 1}\\}`,
-//                             `${indexSetToLatex([...step.B.filter(i => i !== h), k].toSorted())}`,
-//                         ].join(' = ')}
-//                     />
-//                 </div>
-//             )
-//         } else {
-//             rows.push(
-//                 <div class="row">
-//                     <p>
-//                         La soluzione duale è <strong>illimitata</strong>.
-//                     </p>
-//                 </div>
-//             )
-//         }
-//     }
+            drawSimpleArrow(g, 0, 0, (c1.toNumber() / cLen) * 4, (c2.toNumber() / cLen) * 4, 0.2, 'darkgreen')
+        }
+        g.restore()
 
-//     return (
-//         <div class="step">
-//             <div class="algebraic-step">{rows}</div>
-//             <div class="geometric-step">
-//                 <PrimalCanvas {...canvasOptions} />
-//             </div>
-//         </div>
-//     )
-// }
+        // draw A_i labels
+
+        g.save()
+        {
+            g.translate(width / 2, height / 2)
+
+            B.forEach(i => {
+                const [a1, a2] = A.rowAt(i).getData()
+                const aLen = Math.sqrt(a1.toNumber() ** 2 + a2.toNumber() ** 2)
+
+                g.beginPath()
+                g.ellipse(
+                    (a1.toNumber() / aLen) * width * 0.45,
+                    -(a2.toNumber() / aLen) * width * 0.45,
+                    9,
+                    9,
+                    0,
+                    0,
+                    Math.PI * 2
+                )
+                g.fillStyle = '#b60'
+                g.fill()
+
+                g.font = 'bold 12px sans-serif'
+                g.fillStyle = '#fff'
+                g.fillText(`${i + 1}`, (a1.toNumber() / aLen) * width * 0.45, -(a2.toNumber() / aLen) * width * 0.45)
+            })
+        }
+        g.restore()
+    }
+
+    return <canvas class="small" ref={$canvas => render($canvas, { A, b, c, B, x, xi, y_B })} />
+}

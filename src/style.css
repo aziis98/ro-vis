@@ -209,10 +209,18 @@
 
             > .geometric-step {
                 display: grid;
+                align-content: start;
+                justify-items: center;
+                gap: 2rem;
 
                 canvas {
                     width: 25rem;
                     height: 25rem;
+
+                    &.small {
+                        width: 15rem;
+                        height: 15rem;
+                    }
 
                     @media (width < 70rem) {
                         width: calc(100vw - 4rem);
@@ -224,7 +232,7 @@
                 }
 
                 @media (width < 70rem) {
-                    padding: 0 1rem;
+                    padding: 0 1rem 1rem;
                 }
             }
 
