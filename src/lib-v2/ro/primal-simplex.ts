@@ -179,14 +179,16 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
                     content: `N = \\{1, \\dots, ${A.rows}\\} \\setminus B = ${indexSetToLatex(N)}`,
                 })
 
-                comments.push({
-                    type: 'formula',
-                    content: [
-                        `A_N \\xi`,
-                        `${matrixToLatex(A_N)} ${vectorToLatex(xi)}`,
-                        `${vectorToLatex(A_N__xi)}`,
-                    ].join(' = '),
-                })
+                if (N.length > 0) {
+                    comments.push({
+                        type: 'formula',
+                        content: [
+                            `A_N \\xi`,
+                            `${matrixToLatex(A_N)} ${vectorToLatex(xi)}`,
+                            `${vectorToLatex(A_N__xi)}`,
+                        ].join(' = '),
+                    })
+                }
 
                 if (!A_N__xi.getData().every(x => x.leq(RationalField.zero))) {
                     const [k, lambda] = N.filter(i => A_N__xi.at(A_N.forwardRowIndices[i]).gt(RationalField.zero))

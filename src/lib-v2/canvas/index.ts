@@ -38,6 +38,8 @@ export function drawSemiplane(
         p2 = b / a2
     }
 
+    console.log('a1', a1, 'a2', a2)
+
     const normalize = Math.sqrt(a1 ** 2 + a2 ** 2) / gradientSize
 
     const gradient = g.createLinearGradient(p1, p2, p1 - a1 / normalize, p2 - a2 / normalize)
@@ -62,15 +64,33 @@ export function drawSemiplane(
         }
     } else {
         if (a2 > 0) {
-            g.moveTo(-MAX_LINE_SIZE, (b - a1 * -MAX_LINE_SIZE) / a2)
-            g.lineTo(-MAX_LINE_SIZE, MAX_LINE_SIZE)
-            g.lineTo(-MAX_LINE_SIZE, -MAX_LINE_SIZE)
-            g.lineTo(MAX_LINE_SIZE, (b - a1 * MAX_LINE_SIZE) / a2)
+            if (a1 >= 0) {
+                g.moveTo(-MAX_LINE_SIZE, (b - a1 * -MAX_LINE_SIZE) / a2)
+                g.lineTo(-MAX_LINE_SIZE, MAX_LINE_SIZE)
+                g.lineTo(-MAX_LINE_SIZE, -MAX_LINE_SIZE)
+                g.lineTo(MAX_LINE_SIZE, (b - a1 * MAX_LINE_SIZE) / a2)
+            } else {
+                g.moveTo(-MAX_LINE_SIZE, (b - a1 * -MAX_LINE_SIZE) / a2)
+                g.lineTo(-MAX_LINE_SIZE, -MAX_LINE_SIZE)
+                g.lineTo(MAX_LINE_SIZE, -MAX_LINE_SIZE)
+                g.lineTo(MAX_LINE_SIZE, (b - a1 * MAX_LINE_SIZE) / a2)
+            }
         } else {
-            g.moveTo(MAX_LINE_SIZE, (b - a1 * MAX_LINE_SIZE) / a2)
-            g.lineTo(MAX_LINE_SIZE, -MAX_LINE_SIZE)
-            g.lineTo(MAX_LINE_SIZE, MAX_LINE_SIZE)
-            g.lineTo(-MAX_LINE_SIZE, (b - a1 * -MAX_LINE_SIZE) / a2)
+            // g.moveTo(MAX_LINE_SIZE, (b - a1 * MAX_LINE_SIZE) / a2)
+            // g.lineTo(MAX_LINE_SIZE, -MAX_LINE_SIZE)
+            // g.lineTo(MAX_LINE_SIZE, MAX_LINE_SIZE)
+            // g.lineTo(-MAX_LINE_SIZE, (b - a1 * -MAX_LINE_SIZE) / a2)
+            if (a1 >= 0) {
+                g.moveTo(-MAX_LINE_SIZE, (b - a1 * -MAX_LINE_SIZE) / a2)
+                g.lineTo(-MAX_LINE_SIZE, -MAX_LINE_SIZE)
+                g.lineTo(-MAX_LINE_SIZE, MAX_LINE_SIZE)
+                g.lineTo(MAX_LINE_SIZE, (b - a1 * MAX_LINE_SIZE) / a2)
+            } else {
+                g.moveTo(-MAX_LINE_SIZE, (b - a1 * -MAX_LINE_SIZE) / a2)
+                g.lineTo(-MAX_LINE_SIZE, MAX_LINE_SIZE)
+                g.lineTo(MAX_LINE_SIZE, MAX_LINE_SIZE)
+                g.lineTo(MAX_LINE_SIZE, (b - a1 * MAX_LINE_SIZE) / a2)
+            }
         }
     }
     g.fill()

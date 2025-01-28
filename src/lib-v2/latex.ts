@@ -26,4 +26,5 @@ export const rowVectorToLatex = (vector: Vector<Rational>) =>
               .join(' & ')} \\end{bmatrix}`
         : ''
 
-export const indexSetToLatex = (indices: number[]) => `\\{${indices.map(i => (i + 1).toString()).join(', ')}\\}`
+export const indexSetToLatex = (indices: number[]) =>
+    indices.length > 0 ? `\\{${indices.map(i => (i + 1).toString()).join(', ')}\\}` : '\\varnothing'
