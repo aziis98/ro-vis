@@ -53,7 +53,7 @@ const PrimalStep = ({
             <div class="algebraic-step">
                 <div class="comment">
                     <p>
-                        Iterazione <strong>{iter + 1}</strong> dell'algoritmo
+                        Iteration <strong>{iter + 1}</strong> of the algorithm
                     </p>
                 </div>
 
@@ -105,7 +105,7 @@ export const Primal = ({ input }: { input: ProblemInput }) => {
             {problemOutput ? (
                 <>
                     <div class="title">
-                        <h2>Svolgimento</h2>
+                        <h2>Visualization</h2>
                     </div>
                     {problemOutput.steps.map((step, iter) => (
                         <PrimalStep

@@ -1,28 +1,18 @@
-# Ricerca Operativa / PL / Algoritmo del Simplesso
+# Operations Research / Linear Programming / Simplex Algorithm
 
-Questo sito è un progetto per il corso di Ricerca Operativa dell'Università di Pisa per visualizzare
-automaticamente tutti i passaggi dell'algoritmo del simplesso primale.
+This website is a project for the course of Operations Research of the
+University of Pisa to automatically visualize automatically all steps of the
+primal simplex algorithm.
 
-## Caratteristiche principali
+## Features
 
--   Visualizza automaticamente tutti i passaggi dell'algoritmo del simplesso primale
+-   Automatically visualize all steps of the primal simplex algorithm
 
--   Gestisce problemi d ricerca operativa in formato matriciale
+-   Save and load problems
 
--   Permette il salvataggio e il caricamento di problemi
+-   Preact as frontend framework
 
--   Utilizza Preact per una interfaccia interattiva
-
-## Funzionamento
-
-1. Inserisci i dati del problema nel campo di testo nel formato specificato
-
-2. Il sistema analizza l'input mostra il risultato dell'algoritmo con tutti i passaggi algebrici
-   dell'algoritmo con una visualizzazione geometrica dello stato corrente
-
-3. Puoi salvare i problemi inseriti e caricarli in seguito
-
-## Svilluppo
+## Development
 
 ### Setup
 
@@ -42,7 +32,8 @@ bun dev
 
 ### Build
 
-Use this command to build the project and serve the files from the `dist/` directory.
+Use this command to build the project and serve the files from the `dist/`
+directory.
 
 ```bash
 bun run build

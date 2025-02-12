@@ -9,6 +9,11 @@ import { Primal } from './Primal'
 
 import exampleProblems from './example-problems.json'
 
+type Problem = {
+    name: string
+    source: string
+}
+
 const INITIAL_PROBLEM_INPUT = `
 c' = 500 200;
 
@@ -42,15 +47,8 @@ const useLocalStorage = <T,>(key: string, initialValue: T) => {
 }
 
 const App = () => {
-    const [currentProblemName, setCurrentProblemName] = useLocalStorage(
-        'ricerca-operativa.currentProblemName',
-        'Pintel'
-    )
-
-    const [savedProblems, setSavedProblems] = useLocalStorage<{ name: string; source: string }[]>(
-        'ricerca-operativa.savedProblems',
-        exampleProblems
-    )
+    const [currentProblemName, setCurrentProblemName] = useLocalStorage('current-problem-name', 'Pintel')
+    const [savedProblems, setSavedProblems] = useLocalStorage<Problem[]>('saved-problems', exampleProblems)
 
     const [problemInput, setProblemInput] = useState(
         savedProblems.find(p => p.name === currentProblemName)?.source ?? INITIAL_PROBLEM_INPUT
@@ -61,20 +59,20 @@ const App = () => {
     return (
         <>
             <h1>
-                Ricerca Operativa / PL / Algoritmo del Simplesso
+                Operations Research / LP / Simplex Algorithm
                 <small>
                     {' '}
                     by <a href="https://poisson.phc.dm.unipi.it/~delucreziis/">@aziis98</a>
                 </small>
             </h1>
             <p>
-                Questo sito è un progetto per il{' '}
-                <a href="https://didawiki.cli.di.unipi.it/doku.php/matematica/ro/start">corso di Ricerca Operativa</a>{' '}
-                dell'Università di Pisa per visualizzare automaticamente tutti i passaggi dell'
-                <a href="https://it.wikipedia.org/wiki/Algoritmo_del_simplesso">algoritmo del simplesso primale</a>.
+                This is a project for the{' '}
+                <a href="https://didawiki.cli.di.unipi.it/doku.php/matematica/ro/start">Operative Research course</a> at
+                the University of Pisa to automatically visualize all the steps of the{' '}
+                <a href="https://en.wikipedia.org/wiki/Simplex_algorithm">primal simplex algorithm</a>.
             </p>
-            <h2>Visualizzazione</h2>
-            <p>I dati del problema vanno inseriti nel seguente campo di testo nel formato:</p>
+            <h2>Visualization</h2>
+            <p>The problem data must be entered in the following text field in the format:</p>
 
             <div class="flex-row">
                 <select
@@ -129,7 +127,7 @@ const App = () => {
                 cols={100}
             ></textarea>
 
-            <h2>Problema di Input</h2>
+            <h2>Input Problem</h2>
             {'result' in problemValuesResult ? (
                 <DisplayProblemInput problemInput={problemValuesResult.result} />
             ) : (

@@ -20,16 +20,16 @@ export function parseSafeProblemInput(source: string): Result<ProblemInput> {
     const { result: env } = parseResult
 
     if (!env.A) {
-        return { error: 'Manca la matrice A' }
+        return { error: 'Missing matrix A' }
     }
     if (!env.b) {
-        return { error: 'Manca il vettore b' }
+        return { error: 'Missing vector b' }
     }
     if (!env.c) {
-        return { error: 'Manca il vettore c' }
+        return { error: 'Missing vector c' }
     }
     if (!env.B) {
-        return { error: 'Manca il vettore B' }
+        return { error: 'Missing vector B' }
     }
 
     const A_asMatrixResult = tryBlock(() => asMatrix(env.A))
@@ -53,23 +53,23 @@ export function parseSafeProblemInput(source: string): Result<ProblemInput> {
     const B = env.B
 
     if (B.rank !== 1) {
-        return { error: 'B deve essere un vettore' }
+        return { error: 'B must be a vector' }
     }
     if (B.value.length !== 2) {
-        return { error: 'B deve contenere esattamente due elementi' }
+        return { error: 'B must contain exactly two elements for this visualization' }
     }
     if (B.value.some(v => !v.isInteger() || v.num < 1 || v.num > A.rows)) {
         return {
-            error: `Gli elementi di B devono essere interi tra 1 e ${A.rows}: ${JSON.stringify(B.value)}`,
+            error: `The elements of B must be integer indices between 1 and ${A.rows}: ${JSON.stringify(B.value)}`,
         }
     }
 
     // check dimensions
     if (A.cols !== c.size) {
-        return { error: 'Il numero di colonne di A deve essere uguale alla dimensione di c' }
+        return { error: 'The number of columns in A must have the same dimension of c' }
     }
     if (A.rows !== b.size) {
-        return { error: 'Il numero di righe di A deve essere uguale alla dimensione di b' }
+        return { error: 'The number of rows of A must match the dimension of b' }
     }
 
     return {

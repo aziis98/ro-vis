@@ -128,15 +128,15 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
 
             comments.push({
                 type: 'text',
-                content: `La soluzione primale è *${isAdmissible ? 'ammissibile' : 'non ammissibile'}* e *${
-                    isDegenerate ? 'degenere' : 'non degenere'
+                content: `The primal solution is *${isAdmissible ? 'admissible' : 'not admissible'}* and *${
+                    isDegenerate ? 'degenerate' : 'non degenerate'
                 }*.`,
             })
 
             comments.push({
                 type: 'text',
-                content: `La soluzione duale è *${isDualAdmissible ? 'ammissibile' : 'non ammissibile'}* e *${
-                    isDualDegenerate ? 'degenere' : 'non degenere'
+                content: `The dual solution is *${isDualAdmissible ? 'admissible' : 'not admissible'}* and *${
+                    isDualDegenerate ? 'degenerate' : 'non degenerate'
                 }*.`,
             })
 
@@ -224,12 +224,12 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
 
                     stepResult_B = [...B.filter(i => i !== h), k].toSorted()
                 } else {
-                    comments.push({ type: 'text', content: 'La soluzione è *illimitata*' })
+                    comments.push({ type: 'text', content: 'The solution is *unbounded*' })
 
                     status = { result: 'unbounded', xi }
                 }
             } else {
-                comments.push({ type: 'text', content: 'La soluzione è *ottima*' })
+                comments.push({ type: 'text', content: 'The solution is *optimal*' })
 
                 status = { result: 'optimal', x }
             }
@@ -258,7 +258,7 @@ export function computePrimalSimplexSteps(input: ProblemInput): ProblemOutput {
 
             comments.push({
                 type: 'text',
-                content: 'In questo caso bisogna usare il metodo del *simplesso duale*.',
+                content: 'In this case you need to use the *dual simplex* algorithm.',
             })
 
             status = { result: 'wrong-starting-basis' }
