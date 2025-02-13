@@ -67,9 +67,10 @@ const App = () => {
             </h1>
             <p>
                 This is a project for the{' '}
-                <a href="https://didawiki.cli.di.unipi.it/doku.php/matematica/ro/start">Operative Research course</a> at
-                the University of Pisa to automatically visualize all the steps of the{' '}
-                <a href="https://en.wikipedia.org/wiki/Simplex_algorithm">primal simplex algorithm</a>.
+                <a href="https://didawiki.cli.di.unipi.it/doku.php/matematica/ro/start">Operations Research course</a>{' '}
+                at the University of Pisa to automatically visualize all the steps of the{' '}
+                <a href="https://en.wikipedia.org/wiki/Simplex_algorithm">primal simplex algorithm</a>, the source code
+                for this <a href="https://github.com/aziis98/ro-vis">is on GitHub</a>.
             </p>
             <h2>Visualization</h2>
             <p>The problem data must be entered in the following text field in the format:</p>
